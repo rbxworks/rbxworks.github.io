@@ -29,14 +29,6 @@
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
         }
 
-        .redeem-coins {
-            font-size: 1.3rem;
-            font-family: 'Press Start 2P', cursive;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-            margin-top: 20px;
-        }
-
         .game-container {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -111,9 +103,8 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9c30ed1ade1ec092b98050a7b8c901a1/invoke.js"></script>
     </div>
 
-    <p class="redeem-coins">Your Score: <span id="score">0</span></p>
-    <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
-    <p class="redeem-coins">Time: <span id="timer">30</span></p>
+    <p>Your Score: <span id="score">0</span></p>
+    <p>Time: <span id="timer">30</span></p>
 
     <div class="game-container">
         <div class="hole" onclick="whackMole(0)"><div class="mole" id="mole0"></div></div>
@@ -125,7 +116,6 @@
     </div>
 
     <button onclick="startGame()">Start Game</button>
-    <button onclick="redeemPoints()">Get Balance</button>
 
     <!-- Ad (728x90) Below Game -->
     <div class="ad-container">
@@ -139,11 +129,6 @@
             };
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/39ec52dc77daee58c5a2b7384152bd54/invoke.js"></script>
-    </div>
-
-    <!-- New Ad Script Below Everything -->
-    <div class="ad-container">
-        <script type='text/javascript' src='//pl26097894.effectiveratecpm.com/8c/e4/db/8ce4dbb327657a662d6ad04afdeaa225.js'></script>
     </div>
 
     <script>
@@ -179,7 +164,6 @@
                     clearInterval(gameInterval);
                     clearInterval(timerInterval);
                     alert("Time's up!");
-                    redeemPoints();
                 }
             }, 1000);
         }
@@ -192,22 +176,6 @@
                 activeMole = -1;
             }
         }
-
-        function redeemPoints() {
-            let redeemCoins = Math.floor(score / 15);
-            if (redeemCoins > 0) {
-                let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
-                localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
-                document.getElementById("redeemCoins").innerText = currentBalance + redeemCoins;
-                alert(`You earned ${redeemCoins} Redeem Coins!`);
-                score = 0;
-                document.getElementById("score").innerText = score;
-            }
-        }
-
-        window.onload = function () {
-            document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
-        };
     </script>
 
 </body>
