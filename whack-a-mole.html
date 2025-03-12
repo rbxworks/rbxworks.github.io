@@ -29,6 +29,12 @@
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
         }
 
+        .stats {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
         .game-container {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -65,13 +71,14 @@
             color: white;
             background: #ff5733;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.1s;
         }
 
         button:hover {
             background: #c70039;
+            transform: scale(1.05);
         }
 
         @keyframes molePop {
@@ -83,13 +90,11 @@
             margin-top: 20px;
         }
     </style>
-
 </head>
 <body>
 
     <div class="top-bar">Whack-a-Mole Game</div>
 
-    <!-- Ad (468x60) Above Game -->
     <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
@@ -103,8 +108,9 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9c30ed1ade1ec092b98050a7b8c901a1/invoke.js"></script>
     </div>
 
-    <p>Your Score: <span id="score">0</span></p>
-    <p>Time: <span id="timer">30</span></p>
+    <p class="stats">Your Score: <span id="score">0</span></p>
+    <p class="stats">Time: <span id="timer">30</span></p>
+    <p class="stats">Redeem Coins: <span id="redeemCoins">0</span></p>
 
     <div class="game-container">
         <div class="hole" onclick="whackMole(0)"><div class="mole" id="mole0"></div></div>
@@ -116,8 +122,8 @@
     </div>
 
     <button onclick="startGame()">Start Game</button>
+    <button onclick="redeemPoints()">Get Balance</button>
 
-    <!-- Ad (728x90) Below Game -->
     <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
@@ -177,6 +183,5 @@
             }
         }
     </script>
-
 </body>
 </html>
