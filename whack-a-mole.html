@@ -29,10 +29,12 @@
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
         }
 
-        .stats {
-            font-size: 1.2rem;
+        .redeem-coins {
+            font-size: 1.3rem;
+            font-family: 'Press Start 2P', cursive;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
             margin-top: 20px;
-            font-weight: bold;
         }
 
         .game-container {
@@ -71,14 +73,13 @@
             color: white;
             background: #ff5733;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+            transition: background 0.3s;
         }
 
         button:hover {
             background: #c70039;
-            transform: scale(1.05);
         }
 
         @keyframes molePop {
@@ -90,11 +91,13 @@
             margin-top: 20px;
         }
     </style>
+
 </head>
 <body>
 
     <div class="top-bar">Whack-a-Mole Game</div>
 
+    <!-- New Ad (468x60) Above Game -->
     <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
@@ -108,9 +111,9 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9c30ed1ade1ec092b98050a7b8c901a1/invoke.js"></script>
     </div>
 
-    <p class="stats">Your Score: <span id="score">0</span></p>
-    <p class="stats">Time: <span id="timer">30</span></p>
-    <p class="stats">Redeem Coins: <span id="redeemCoins">0</span></p>
+    <p class="redeem-coins">Your Score: <span id="score">0</span></p>
+    <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
+    <p class="redeem-coins">Time: <span id="timer">30</span></p>
 
     <div class="game-container">
         <div class="hole" onclick="whackMole(0)"><div class="mole" id="mole0"></div></div>
@@ -124,6 +127,7 @@
     <button onclick="startGame()">Start Game</button>
     <button onclick="redeemPoints()">Get Balance</button>
 
+    <!-- Existing Ad (728x90) Below Game -->
     <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
@@ -170,6 +174,7 @@
                     clearInterval(gameInterval);
                     clearInterval(timerInterval);
                     alert("Time's up!");
+                    redeemPoints();
                 }
             }, 1000);
         }
@@ -182,6 +187,23 @@
                 activeMole = -1;
             }
         }
+
+        function redeemPoints() {
+            let redeemCoins = Math.floor(score / 15);
+            if (redeemCoins > 0) {
+                let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
+                localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
+                document.getElementById("redeemCoins").innerText = currentBalance + redeemCoins;
+                alert(`You earned ${redeemCoins} Redeem Coins!`);
+                score = 0;
+                document.getElementById("score").innerText = score;
+            }
+        }
+
+        window.onload = function () {
+            document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
+        };
     </script>
+
 </body>
 </html>
