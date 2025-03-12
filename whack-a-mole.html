@@ -42,7 +42,7 @@
             grid-template-columns: repeat(3, 100px);
             gap: 20px;
             justify-content: center;
-            margin-top: 50px;
+            margin-top: 20px;
         }
 
         .hole {
@@ -88,7 +88,7 @@
         }
 
         .ad-container {
-            margin-top: 30px;
+            margin-top: 20px;
         }
     </style>
 
@@ -96,6 +96,20 @@
 <body>
 
     <div class="top-bar">Whack-a-Mole Game</div>
+
+    <!-- Ad (468x60) Above Game -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '9c30ed1ade1ec092b98050a7b8c901a1',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9c30ed1ade1ec092b98050a7b8c901a1/invoke.js"></script>
+    </div>
 
     <p class="redeem-coins">Your Score: <span id="score">0</span></p>
     <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
@@ -113,7 +127,7 @@
     <button onclick="startGame()">Start Game</button>
     <button onclick="redeemPoints()">Get Balance</button>
 
-    <!-- Ad Placement -->
+    <!-- Ad (728x90) Below Game -->
     <div class="ad-container">
         <script type="text/javascript">
             atOptions = {
@@ -125,6 +139,11 @@
             };
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/39ec52dc77daee58c5a2b7384152bd54/invoke.js"></script>
+    </div>
+
+    <!-- New Ad Script Below Everything -->
+    <div class="ad-container">
+        <script type='text/javascript' src='//pl26097894.effectiveratecpm.com/8c/e4/db/8ce4dbb327657a662d6ad04afdeaa225.js'></script>
     </div>
 
     <script>
