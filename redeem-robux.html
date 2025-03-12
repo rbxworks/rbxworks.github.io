@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redeem Robux</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00;
+        }
+
+        .input-box {
+            padding: 10px;
+            font-size: 1.2rem;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #ff6600, #ffcc00);
+            color: white;
+            font-size: 1.3rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 204, 0, 1);
+        }
+
+        .info {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #ffcc00;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Redeem Robux</h1>
+        <p class="info">3 Redeem Coins = 1 Robux</p>
+        <input type="number" id="robuxAmount" class="input-box" placeholder="Enter Robux Amount">
+        <button class="btn" onclick="redeemRobux()">Redeem</button>
+    </div>
+
+    <script>
+        function getRedeemCoins() {
+            return parseFloat(localStorage.getItem("redeemCoins")) || 0;
+        }
+
+        function setRedeemCoins(amount) {
+            localStorage.setItem("redeemCoins", amount);
+        }
+
+        function redeemRobux() {
+            let robuxAmount = parseInt(document.getElementById("robuxAmount").value);
+            let username = localStorage.getItem("username");
+            let redeemCoins = getRedeemCoins();
+            let requiredCoins = robuxAmount * 3;
+
+            if (!robuxAmount || robuxAmount <= 0) {
+                alert("Enter a valid amount!");
+                return;
+            }
+
+            if (redeemCoins < requiredCoins) {
+                alert("You don't have enough Redeem Coins!");
+                return;
+            }
+
+            setRedeemCoins(redeemCoins - requiredCoins);
+            sendEmail(username, robuxAmount);
+            alert(`Successfully redeemed ${robuxAmount} Robux!`);
+            window.location.href = "Surveys.html";
+        }
+
+        function sendEmail(username, robuxAmount) {
+            emailjs.init("AlTre8B0OFHawjcX-");
+            
+            emailjs.send("service_6yuwm58", "template_3wbj4ii", {
+                username: username,
+                robux: robuxAmount
+            }).then(
+                function(response) {
+                    console.log("Email sent!", response.status, response.text);
+                },
+                function(error) {
+                    console.log("Failed to send email.", error);
+                }
+            );
+        }
+    </script>
+
+</body>
+</html>
