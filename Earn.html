@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earn Redeem Coins</title>
+    <title>Whack-a-Mole - Earn Coins</title>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: url('background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
             text-align: center;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, #2E3192, #1BFFFF);
+            color: white;
+            padding-top: 60px;
         }
 
         .top-bar {
@@ -35,46 +29,141 @@
             text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
         }
 
-        h1 {
-            font-size: 3rem;
-            text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00;
-            margin-top: 100px;
-            animation: fadeIn 1.5s ease-out;
+        .redeem-coins {
+            font-size: 1.3rem;
+            font-family: 'Press Start 2P', cursive;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+            margin-top: 20px;
         }
 
-        .btn {
-            background: linear-gradient(90deg, #ff6600, #ffcc00);
-            color: white;
-            font-size: 1.5rem;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .hole {
+            width: 100px;
+            height: 100px;
+            background: #222;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mole {
+            width: 80px;
+            height: 80px;
+            background: brown;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -100%;
+            transition: bottom 0.3s ease-in-out;
             cursor: pointer;
-            transition: 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
-            margin: 15px;
-            width: 300px;
         }
 
-        .btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 1);
+        .mole.active {
+            bottom: 10%;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: #ff5733;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #c70039;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
+    <div class="top-bar">Whack-a-Mole Game</div>
 
-    <div class="top-bar">Earn Redeem Coins</div>
+    <p class="redeem-coins">Your Score: <span id="score">0</span></p>
+    <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
+    <p class="redeem-coins">Time: <span id="timer">30</span></p>
 
-    <h1>Play and Earn!</h1>
+    <div class="game-container">
+        <div class="hole" onclick="whackMole(0)"><div class="mole" id="mole0"></div></div>
+        <div class="hole" onclick="whackMole(1)"><div class="mole" id="mole1"></div></div>
+        <div class="hole" onclick="whackMole(2)"><div class="mole" id="mole2"></div></div>
+        <div class="hole" onclick="whackMole(3)"><div class="mole" id="mole3"></div></div>
+        <div class="hole" onclick="whackMole(4)"><div class="mole" id="mole4"></div></div>
+        <div class="hole" onclick="whackMole(5)"><div class="mole" id="mole5"></div></div>
+    </div>
 
-    <button class="btn" onclick="playWhackAMole()">Play Whack-a-Mole</button>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="getBalance()">Get Balance</button>
 
     <script>
-        function playWhackAMole() {
-            window.location.href = "whack-a-mole.html";
+        let score = 0;
+        let activeMole = -1;
+        let gameInterval;
+        let timeLeft = 30;
+        let timerInterval;
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            document.getElementById("score").innerText = score;
+            document.getElementById("timer").innerText = timeLeft;
+
+            if (gameInterval) clearInterval(gameInterval);
+            if (timerInterval) clearInterval(timerInterval);
+
+            gameInterval = setInterval(() => {
+                if (activeMole !== -1) {
+                    document.getElementById(`mole${activeMole}`).classList.remove("active");
+                }
+
+                activeMole = Math.floor(Math.random() * 6);
+                document.getElementById(`mole${activeMole}`).classList.add("active");
+            }, 800);
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(gameInterval);
+                    clearInterval(timerInterval);
+                    alert("Time's up!");
+                    redeemPoints();
+                }
+            }, 1000);
+        }
+
+        function whackMole(index) {
+            if (index === activeMole) {
+                score++;
+                document.getElementById("score").innerText = score;
+                document.getElementById(`mole${index}`).classList.remove("active");
+                activeMole = -1;
+            }
+        }
+
+        function getBalance() {
+            let currentBalance = localStorage.getItem("redeemCoins") || 0;
+            document.getElementById("redeemCoins").innerText = currentBalance;
+            alert(`Your current balance is ${currentBalance} Redeem Coins.`);
         }
     </script>
-
+    
+    <script async src="https://bugaruche.com/dImKF_zId.GPNjvCZdGsUa/Tehmq9cu/ZPUxlMk-PWTJYoxMNRztc/wnN/DPMKtRNpjWE/3gNuzHAs0/NGAm"></script>
 </body>
 </html>
