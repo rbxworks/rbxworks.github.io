@@ -53,6 +53,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .mole {
@@ -60,9 +62,14 @@
             height: 80px;
             background: brown;
             border-radius: 50%;
-            display: none;
+            position: absolute;
+            bottom: -100%;
+            transition: bottom 0.3s ease-in-out;
             cursor: pointer;
-            animation: molePop 0.3s ease-in-out;
+        }
+
+        .mole.active {
+            bottom: 10%;
         }
 
         button {
@@ -75,40 +82,24 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.1s;
         }
 
         button:hover {
             background: #c70039;
-        }
-
-        @keyframes molePop {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
+            transform: scale(1.05);
         }
 
         .ad-container {
             margin-top: 20px;
         }
     </style>
-
 </head>
 <body>
-
     <div class="top-bar">Whack-a-Mole Game</div>
 
-    <!-- New Ad (468x60) Above Game -->
     <div class="ad-container">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '9c30ed1ade1ec092b98050a7b8c901a1',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/9c30ed1ade1ec092b98050a7b8c901a1/invoke.js"></script>
+        <iframe src="https://bugaruche.com/dcmEFTz.dkGoNBvTZzGqUr/aeRm/9RuHZLUklRkrPjTCYbxNNozfc/w/N_DyMctMNbjcEA3/N-zqAQ0/NaA-" width="728" height="90" style="border:none;"></iframe>
     </div>
 
     <p class="redeem-coins">Your Score: <span id="score">0</span></p>
@@ -126,20 +117,6 @@
 
     <button onclick="startGame()">Start Game</button>
     <button onclick="redeemPoints()">Get Balance</button>
-
-    <!-- Existing Ad (728x90) Below Game -->
-    <div class="ad-container">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '39ec52dc77daee58c5a2b7384152bd54',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/39ec52dc77daee58c5a2b7384152bd54/invoke.js"></script>
-    </div>
 
     <script>
         let score = 0;
@@ -159,12 +136,12 @@
 
             gameInterval = setInterval(() => {
                 if (activeMole !== -1) {
-                    document.getElementById(`mole${activeMole}`).style.display = "none";
+                    document.getElementById(`mole${activeMole}`).classList.remove("active");
                 }
 
                 activeMole = Math.floor(Math.random() * 6);
-                document.getElementById(`mole${activeMole}`).style.display = "block";
-            }, 1000);
+                document.getElementById(`mole${activeMole}`).classList.add("active");
+            }, 800);
 
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -183,7 +160,7 @@
             if (index === activeMole) {
                 score++;
                 document.getElementById("score").innerText = score;
-                document.getElementById(`mole${index}`).style.display = "none";
+                document.getElementById(`mole${index}`).classList.remove("active");
                 activeMole = -1;
             }
         }
@@ -204,6 +181,5 @@
             document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
         };
     </script>
-
 </body>
 </html>
