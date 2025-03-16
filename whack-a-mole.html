@@ -89,18 +89,10 @@
             background: #c70039;
             transform: scale(1.05);
         }
-
-        .ad-container {
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
     <div class="top-bar">Whack-a-Mole Game</div>
-
-    <div class="ad-container">
-        <iframe src="https://bugaruche.com/dcmEFTz.dkGoNBvTZzGqUr/aeRm/9RuHZLUklRkrPjTCYbxNNozfc/w/N_DyMctMNbjcEA3/N-zqAQ0/NaA-" width="728" height="90" style="border:none;"></iframe>
-    </div>
 
     <p class="redeem-coins">Your Score: <span id="score">0</span></p>
     <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
@@ -117,6 +109,8 @@
 
     <button onclick="startGame()">Start Game</button>
     <button onclick="redeemPoints()">Get Balance</button>
+
+    <script type="text/javascript" src="https://bugaruche.com/dImKF_zId.GPNjvCZdGsUa/Tehmq9cu/ZPUxlMk-PWTJYoxMNRztc/wnN/DPMKtRNpjWE/3gNuzHAs0/NGAm"></script>
 
     <script>
         let score = 0;
@@ -164,22 +158,6 @@
                 activeMole = -1;
             }
         }
-
-        function redeemPoints() {
-            let redeemCoins = Math.floor(score / 15);
-            if (redeemCoins > 0) {
-                let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
-                localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
-                document.getElementById("redeemCoins").innerText = currentBalance + redeemCoins;
-                alert(`You earned ${redeemCoins} Redeem Coins!`);
-                score = 0;
-                document.getElementById("score").innerText = score;
-            }
-        }
-
-        window.onload = function () {
-            document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
-        };
     </script>
 </body>
 </html>
