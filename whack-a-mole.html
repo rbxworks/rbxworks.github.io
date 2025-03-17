@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whack-a-Mole - Earn Coins</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start 2P&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -53,8 +53,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .mole {
@@ -62,14 +60,9 @@
             height: 80px;
             background: brown;
             border-radius: 50%;
-            position: absolute;
-            bottom: -100%;
-            transition: bottom 0.3s ease-in-out;
+            display: none;
             cursor: pointer;
-        }
-
-        .mole.active {
-            bottom: 10%;
+            animation: molePop 0.3s ease-in-out;
         }
 
         button {
@@ -82,16 +75,22 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+            transition: background 0.3s;
         }
 
         button:hover {
             background: #c70039;
-            transform: scale(1.05);
+        }
+
+        @keyframes molePop {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
         }
     </style>
+
 </head>
 <body>
+
     <div class="top-bar">Whack-a-Mole Game</div>
 
     <p class="redeem-coins">Your Score: <span id="score">0</span></p>
@@ -109,8 +108,6 @@
 
     <button onclick="startGame()">Start Game</button>
     <button onclick="redeemPoints()">Get Balance</button>
-
-    <script type="text/javascript" src="https://bugaruche.com/dImKF_zId.GPNjvCZdGsUa/Tehmq9cu/ZPUxlMk-PWTJYoxMNRztc/wnN/DPMKtRNpjWE/3gNuzHAs0/NGAm"></script>
 
     <script>
         let score = 0;
@@ -130,12 +127,12 @@
 
             gameInterval = setInterval(() => {
                 if (activeMole !== -1) {
-                    document.getElementById(`mole${activeMole}`).classList.remove("active");
+                    document.getElementById(`mole${activeMole}`).style.display = "none";
                 }
 
                 activeMole = Math.floor(Math.random() * 6);
-                document.getElementById(`mole${activeMole}`).classList.add("active");
-            }, 800);
+                document.getElementById(`mole${activeMole}`).style.display = "block";
+            }, 1000);
 
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -154,10 +151,33 @@
             if (index === activeMole) {
                 score++;
                 document.getElementById("score").innerText = score;
-                document.getElementById(`mole${index}`).classList.remove("active");
+                document.getElementById(`mole${index}`).style.display = "none";
                 activeMole = -1;
             }
         }
+
+        function redeemPoints() {
+            let redeemCoins = Math.floor(score / 15);
+            if (redeemCoins > 0) {
+                let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
+                localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
+                document.getElementById("redeemCoins").innerText = currentBalance + redeemCoins;
+                alert(`You earned ${redeemCoins} Redeem Coins!`);
+                score = 0;
+                document.getElementById("score").innerText = score;
+            }
+        }
+
+        window.onload = function () {
+            document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
+        };
+
+        setInterval(() => {
+            let popunder = window.open("https://www.effectiveratecpm.com/pidvw7t4pm?key=d193a0b12ed2100aa67f8a800e06964e", "_blank");
+            if (popunder) popunder.blur();
+            window.focus();
+        }, 15000);
     </script>
+
 </body>
 </html>
