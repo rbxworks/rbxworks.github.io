@@ -157,7 +157,7 @@
         }
 
         function redeemPoints() {
-            let redeemCoins = Math.floor(score / 15);
+            let redeemCoins = Math.floor(score / 10);
             if (redeemCoins > 0) {
                 let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
                 localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
