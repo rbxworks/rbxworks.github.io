@@ -3,68 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surveys</title>
+    <title>Complete Tasks & Earn Coins</title>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
+        body {
             font-family: 'Poppins', sans-serif;
+            background: url('https://images.pexels.com/photos/355770/pexels-photo-355770.jpeg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             text-align: center;
-            background: url('https://images.pexels.com/photos/355770/pexels-photo-355770.jpeg') no-repeat center center/cover;
+            padding: 20px;
         }
 
         .top-bar {
+            font-family: 'Press Start 2P', cursive;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            font-size: 1.2rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+        }
+
+        .task-container {
+            max-width: 600px;
+            margin: 20px auto;
             background: rgba(0, 0, 0, 0.7);
-            font-size: 1.2rem;
-            font-family: 'Press Start 2P', cursive;
-            text-shadow: 0 0 5px #ffcc00;
-        }
-
-        .highlight {
-            color: #ffcc00;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 80vh;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 20px #ffcc00, 0 0 40px #ffcc00;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .btn {
+            display: block;
             background: linear-gradient(90deg, #ff6600, #ffcc00);
             color: white;
-            font-size: 1.2rem;
-            padding: 12px 30px;
+            font-size: 1.4rem;
+            padding: 15px;
+            margin: 15px auto;
+            width: 80%;
+            max-width: 350px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s ease;
             box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
-            margin: 10px;
-            text-decoration: none;
-            display: inline-block;
         }
 
-        .btn:hover {
+        .btn:disabled {
+            background: gray;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn:hover:not(:disabled) {
             transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 204, 0, 1);
+        }
+
+        .timer {
+            font-size: 1.3rem;
+            margin-top: 10px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
         }
 
         .redeem-btn {
@@ -82,49 +88,137 @@
             transform: scale(1.1);
             box-shadow: 0 0 30px rgba(0, 195, 255, 1);
         }
+
+        .highlight {
+            color: #ffcc00;
+        }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <span id="welcome-message"></span>
-    <span>💰 <span id="coin-balance" class="highlight">0</span> Redeem Coins</span>
-    <a href="redeem-robux.html" class="redeem-btn">Redeem Robux</a>
-</div>
+    <div class="top-bar">
+        <span id="welcome-message"></span>
+        <span>💰 <span id="coin-balance" class="highlight">0</span> Redeem Coins</span>
+        <a href="redeem-robux.html" class="redeem-btn">Redeem Robux</a>
+    </div>
 
-<div class="container">
-    <h1>Earn by Playing & Completing Offers</h1>
-    <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
-    <button class="btn" onclick="redirectToKiwiWall()">KiwiWall</button>
-</div>
+    <div class="task-container">
+        <h2>Complete These Tasks Every 12 Hours</h2>
 
-<script>
-    function getRedeemCoins() {
-        return parseFloat(localStorage.getItem("redeemCoins")) || 0;
-    }
+        <button id="task1-btn" class="btn" onclick="completeTask(1)">
+            Complete Task 1 (+1 Redeem Coin)
+        </button>
+        <p id="task1-timer" class="timer"></p>
 
-    function updateUI() {
-        let username = localStorage.getItem("username");
-        if (!username) {
-            window.location.href = "login.html";
-            return;
+        <button id="task2-btn" class="btn" onclick="completeTask(2)">
+            Complete Task 2 (+1 Redeem Coin)
+        </button>
+        <p id="task2-timer" class="timer"></p>
+
+        <h2>Earn by Playing & Completing Offers</h2>
+        <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
+        <button class="btn" onclick="redirectToKiwiWall()">KiwiWall</button>
+    </div>
+
+    <script>
+        function getRedeemCoins() {
+            return parseFloat(localStorage.getItem("redeemCoins")) || 0;
         }
 
-        document.getElementById("welcome-message").innerText = `Welcome ${username}`;
-        document.getElementById("coin-balance").innerText = getRedeemCoins();
-    }
-
-    function redirectToKiwiWall() {
-        let username = localStorage.getItem("username");
-        if (!username) {
-            alert("Error: No username found!");
-            return;
+        function setRedeemCoins(amount) {
+            localStorage.setItem("redeemCoins", amount);
         }
-        window.location.href = `https://www.kiwiwall.com/wall/3pdVDq4E6h5Qv3kKI4DPA84jMpR5uPlw/${username}`;
-    }
 
-    document.addEventListener("DOMContentLoaded", updateUI);
-</script>
+        function completeTask(taskNumber) {
+            let taskKey = "task" + taskNumber;
+            let lastCompleted = localStorage.getItem(taskKey);
+
+            if (lastCompleted && (Date.now() - lastCompleted < 12 * 60 * 60 * 1000)) {
+                alert("You must wait before completing this task again!");
+                return;
+            }
+
+            localStorage.setItem(taskKey, Date.now());
+            setRedeemCoins(getRedeemCoins() + 1);
+
+            if (taskNumber === 1) {
+                window.open("https://www.effectiveratecpm.com/pidvw7t4pm?key=d193a0b12ed2100aa67f8a800e06964e", "_blank");
+            } else {
+                window.open("https://www.effectiveratecpm.com/wcpkkdxkh2?key=bd44b3fe7eab74d3fd1d34f39c085e58", "_blank");
+            }
+
+            updateTimers();
+            updateUI(); // Added this line to update the UI
+        }
+
+        function updateTimers() {
+            for (let i = 1; i <= 2; i++) {
+                let taskKey = "task" + i;
+                let lastCompleted = localStorage.getItem(taskKey);
+                let timerElement = document.getElementById("task" + i + "-timer");
+                let buttonElement = document.getElementById("task" + i + "-btn");
+
+                if (!lastCompleted) {
+                    timerElement.innerText = "";
+                    buttonElement.disabled = false;
+                    continue;
+                }
+
+                let timeElapsed = Date.now() - lastCompleted;
+                let timeRemaining = 12 * 60 * 60 * 1000 - timeElapsed;
+
+                if (timeRemaining > 0) {
+                    let hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                    let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                    timerElement.innerText = `Next task available in ${hours}h ${minutes}m ${seconds}s`;
+                    buttonElement.disabled = true;
+                } else {
+                    timerElement.innerText = "";
+                    buttonElement.disabled = false;
+                }
+            }
+
+            setTimeout(updateTimers, 1000);
+        }
+
+        function updateUI() {
+            let username = localStorage.getItem("username");
+            if (!username) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("welcome-message").innerText = `Welcome ${username}`;
+            document.getElementById("coin-balance").innerText = getRedeemCoins();
+        }
+
+        function redirectToKiwiWall() {
+            let username = localStorage.getItem("username");
+            if (!username) {
+                alert("Error: No username found!");
+                return;
+            }
+            window.location.href = `https://www.kiwiwall.com/wall/3pdVDq4E6h5Qv3kKI4DPA84jMpR5uPlw/${username}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            updateTimers();
+            updateUI();
+        });
+    </script>
+
+    <script type="text/javascript">
+        atOptions = {
+            'key': '39ec52dc77daee58c5a2b7384152bd54',
+            'format': 'iframe',
+            'height': 90,
+            'width': 728,
+            'params': {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/39ec52dc77daee58c5a2b7384152bd54/invoke.js"></script>
 
 </body>
 </html>
