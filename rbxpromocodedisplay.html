@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Code Redemption</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e2f, #3a3a60);
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            width: 80%;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 18px;
+            text-shadow: 0 0 10px cyan;
+        }
+        .promo {
+            font-size: 22px;
+            background: black;
+            padding: 10px 15px;
+            display: inline-block;
+            border-radius: 5px;
+            box-shadow: 0 0 10px cyan;
+            margin: 15px 0;
+        }
+        .redeem-btn {
+            background: cyan;
+            color: black;
+            padding: 15px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 10px cyan;
+            transition: transform 0.2s ease-in-out;
+        }
+        .redeem-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Promo Code:</h1>
+        <div class="promo">FREEREDEEMCOINS</div>
+        <button class="redeem-btn" onclick="window.location.href='promocode.html'">Redeem Promo Code</button>
+    </div>
+</body>
+</html>
