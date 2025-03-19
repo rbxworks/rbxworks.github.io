@@ -115,9 +115,9 @@
         </button>
         <p id="task2-timer" class="timer"></p>
 
-        <h2>Earn by Playing & Completing Offers</h2>
+        <h2>Earn by Playing Games</h2>
         <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
-        <button class="btn" onclick="redirectToKiwiWall()">KiwiWall</button>
+        <button class="btn" onclick="window.location.href='promocode.html'">Redeem PromoCode</button>
     </div>
 
     <script>
@@ -148,7 +148,7 @@
             }
 
             updateTimers();
-            updateUI(); // Added this line to update the UI
+            updateUI();
         }
 
         function updateTimers() {
@@ -194,22 +194,11 @@
             document.getElementById("coin-balance").innerText = getRedeemCoins();
         }
 
-        function redirectToKiwiWall() {
-            let username = localStorage.getItem("username");
-            if (!username) {
-                alert("Error: No username found!");
-                return;
-            }
-            window.location.href = `https://www.kiwiwall.com/wall/3pdVDq4E6h5Qv3kKI4DPA84jMpR5uPlw/${username}`;
-        }
-
         document.addEventListener("DOMContentLoaded", function() {
             updateTimers();
             updateUI();
         });
-    </script>
-
-    <script type="text/javascript">
+    </script><script type="text/javascript">
         atOptions = {
             'key': '39ec52dc77daee58c5a2b7384152bd54',
             'format': 'iframe',
