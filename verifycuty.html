@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification | Cuty.io</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #121212;
+            color: white;
+            padding: 50px;
+            margin: 0; /* Added to remove default body margin */
+            display: flex; /* Added for centering */
+            justify-content: center; /* Added for centering */
+            align-items: center; /* Added for centering */
+            min-height: 100vh; /* Added for full viewport height */
+        }
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .loader {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ffcc00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn {
+            background: #ffcc00;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #e6b800;
+        }
+    </style>
+    <script>
+        function verifyRedirect() {
+            document.getElementById("status").innerHTML = "Verifying...";
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("verified")) {
+                setTimeout(() => {
+                    let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
+                    localStorage.setItem("redeemCoins", coins + 2);
+                    document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
+                    document.querySelector('.loader').style.display = 'none'; // Hide loader
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
+                    document.getElementById("retry").style.display = "block";
+                    document.querySelector('.loader').style.display = 'none'; // Hide loader
+                }, 2000);
+            }
+        }
+        window.onload = verifyRedirect;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Cuty.io Verification</h1>
+        <div class="loader"></div>
+        <h2 id="status">Checking...</h2>
+        <button id="retry" class="btn" style="display: none;" onclick="location.href='https://cuty.io'">Retry</button>
+    </div>
+</body>
+</html>
