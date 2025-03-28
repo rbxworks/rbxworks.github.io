@@ -16,6 +16,9 @@
             text-align: center;
             padding: 20px;
             margin: 0; /* Remove default margin */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the body takes full height */
         }
 
         .top-bar {
@@ -40,6 +43,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            flex: 1; /* Allow the container to grow and fill space */
         }
 
         .btn {
@@ -119,6 +123,18 @@
             box-shadow: 0 0 30px rgba(40, 167, 69, 1);
         }
 
+        .bottom-bar {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        }
+
         /* Media Queries for Mobile Support */
         @media (max-width: 600px) {
             .top-bar {
@@ -154,6 +170,10 @@
         <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
         <button class="special-btn" onclick="window.location.href='tasks.html'">Watch Ads and Complete Tasks to Earn</button>
         <button class="btn" onclick="window.location.href='promocode.html'">Redeem PromoCode</button>
+    </div>
+
+    <div class="bottom-bar">
+        Not affiliated with Roblox in any way.
     </div>
 
     <script>
