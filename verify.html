@@ -61,9 +61,7 @@
             let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
             let today = getCurrentDate();
 
-            if (lastCompleted === today) {
-                return false; // Task already completed today
-            }
+            if (lastCompleted === today) return false; // Already counted today
 
             if (lastCompleted) {
                 let lastDate = new Date(lastCompleted);
@@ -87,32 +85,20 @@
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
-            const hasEarned = localStorage.getItem("hasEarnedCoins");
             let success = false;
 
             if (urlParams.has("verified")) {
-                if (!hasEarned) {
-                    setTimeout(() => {
-                        let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
-                        localStorage.setItem("redeemCoins", coins + 1);
-                        localStorage.setItem("hasEarnedCoins", "true");
+                setTimeout(() => {
+                    success = increaseStreak();
 
-                        success = increaseStreak();
+                    if (success) {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins! (+1 Streak)";
+                    } else {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
+                    }
 
-                        if (success) {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins! (+1 Streak)";
-                        } else {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
-                        }
-
-                        document.querySelector('.loader').style.display = 'none';
-                    }, 2000);
-                } else {
-                    setTimeout(() => {
-                        document.getElementById("status").innerHTML = "❌ You have already earned coins from this link today.";
-                        document.querySelector('.loader').style.display = 'none';
-                    }, 2000);
-                }
+                    document.querySelector('.loader').style.display = 'none';
+                }, 2000);
             } else {
                 setTimeout(() => {
                     document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
