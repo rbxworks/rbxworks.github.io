@@ -55,13 +55,23 @@
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
+            const hasEarned = localStorage.getItem("hasEarnedCoins");
+
             if (urlParams.has("verified")) {
-                setTimeout(() => {
-                    let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
-                    localStorage.setItem("redeemCoins", coins + 2);
-                    document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
-                    document.querySelector('.loader').style.display = 'none'; // Hide loader
-                }, 2000);
+                if (!hasEarned) {
+                    setTimeout(() => {
+                        let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
+                        localStorage.setItem("redeemCoins", coins + 2);
+                        localStorage.setItem("hasEarnedCoins", "true"); // Mark as earned
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
+                        document.querySelector('.loader').style.display = 'none'; // Hide loader
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        document.getElementById("status").innerHTML = "❌ You have already earned coins from this link.";
+                        document.querySelector('.loader').style.display = 'none'; // Hide loader
+                    }, 2000);
+                }
             } else {
                 setTimeout(() => {
                     document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
