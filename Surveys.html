@@ -21,38 +21,40 @@
             font-family: 'Press Start 2P', cursive;
             background: rgba(0, 0, 0, 0.8);
             padding: 15px;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: #ffcc00;
             text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        .task-container {
-            max-width: 600px;
-            margin: 20px auto;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
         }
 
         .btn {
             display: block;
-            background: linear-gradient(90deg, #ff6600, #ffcc00);
+            background: linear-gradient(90deg, #007bff, #00c3ff);
             color: white;
-            font-size: 1.4rem;
-            padding: 15px;
-            margin: 15px auto;
-            width: 80%;
-            max-width: 350px;
+            font-size: 1.6rem;
+            padding: 30px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 500px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.8);
         }
 
         .btn:disabled {
@@ -62,35 +64,38 @@
         }
 
         .btn:hover:not(:disabled) {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 1);
-        }
-
-        .timer {
-            font-size: 1.3rem;
-            margin-top: 10px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-        }
-
-        .redeem-btn {
-            background: linear-gradient(90deg, #007bff, #00c3ff);
-            padding: 12px 20px;
-            font-size: 1rem;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 195, 255, 0.8);
-        }
-
-        .redeem-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(0, 195, 255, 1);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 204, 255, 1);
         }
 
         .highlight {
             color: #ffcc00;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+        }
+
+        .special-btn {
+            background: linear-gradient(90deg, #ffcc00, #ff6600); /* Standout color */
+            font-size: 1.8rem;
+            padding: 35px; /* Slightly larger padding */
+            margin: 30px auto;
+            width: 90%;
+            max-width: 500px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.8);
+        }
+
+        .special-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 204, 0, 1);
         }
     </style>
 </head>
@@ -102,85 +107,15 @@
         <a href="redeem-robux.html" class="redeem-btn">Redeem Robux</a>
     </div>
 
-    <div class="task-container">
-        <h2>Complete These Tasks Every 12 Hours</h2>
-
-        <button id="task1-btn" class="btn" onclick="completeTask(1)">
-            Complete Task 1 (+1 Redeem Coin)
-        </button>
-        <p id="task1-timer" class="timer"></p>
-
-        <button id="task2-btn" class="btn" onclick="completeTask(2)">
-            Complete Task 2 (+1 Redeem Coin)
-        </button>
-        <p id="task2-timer" class="timer"></p>
-
+    <div class="container">
         <h2>Earn by Playing Games</h2>
         <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
-        <button class="btn" onclick="window.location.href='promocode.html'">Redeem PromoCode</button>
+        <button class="special-btn" onclick="window.location.href='tasks.html'">Watch Ads and Complete Tasks to Earn</button>
     </div>
 
     <script>
         function getRedeemCoins() {
             return parseFloat(localStorage.getItem("redeemCoins")) || 0;
-        }
-
-        function setRedeemCoins(amount) {
-            localStorage.setItem("redeemCoins", amount);
-        }
-
-        function completeTask(taskNumber) {
-            let taskKey = "task" + taskNumber;
-            let lastCompleted = localStorage.getItem(taskKey);
-
-            if (lastCompleted && (Date.now() - lastCompleted < 12 * 60 * 60 * 1000)) {
-                alert("You must wait before completing this task again!");
-                return;
-            }
-
-            localStorage.setItem(taskKey, Date.now());
-            setRedeemCoins(getRedeemCoins() + 1);
-
-            if (taskNumber === 1) {
-                window.open("https://www.effectiveratecpm.com/pidvw7t4pm?key=d193a0b12ed2100aa67f8a800e06964e", "_blank");
-            } else {
-                window.open("https://www.effectiveratecpm.com/wcpkkdxkh2?key=bd44b3fe7eab74d3fd1d34f39c085e58", "_blank");
-            }
-
-            updateTimers();
-            updateUI();
-        }
-
-        function updateTimers() {
-            for (let i = 1; i <= 2; i++) {
-                let taskKey = "task" + i;
-                let lastCompleted = localStorage.getItem(taskKey);
-                let timerElement = document.getElementById("task" + i + "-timer");
-                let buttonElement = document.getElementById("task" + i + "-btn");
-
-                if (!lastCompleted) {
-                    timerElement.innerText = "";
-                    buttonElement.disabled = false;
-                    continue;
-                }
-
-                let timeElapsed = Date.now() - lastCompleted;
-                let timeRemaining = 12 * 60 * 60 * 1000 - timeElapsed;
-
-                if (timeRemaining > 0) {
-                    let hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-                    let minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                    let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-                    timerElement.innerText = `Next task available in ${hours}h ${minutes}m ${seconds}s`;
-                    buttonElement.disabled = true;
-                } else {
-                    timerElement.innerText = "";
-                    buttonElement.disabled = false;
-                }
-            }
-
-            setTimeout(updateTimers, 1000);
         }
 
         function updateUI() {
@@ -195,19 +130,9 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            updateTimers();
             updateUI();
         });
-    </script><script type="text/javascript">
-        atOptions = {
-            'key': '39ec52dc77daee58c5a2b7384152bd54',
-            'format': 'iframe',
-            'height': 90,
-            'width': 728,
-            'params': {}
-        };
     </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/39ec52dc77daee58c5a2b7384152bd54/invoke.js"></script>
 
 </body>
 </html>
