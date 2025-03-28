@@ -15,6 +15,7 @@
             color: white;
             text-align: center;
             padding: 20px;
+            margin: 0; /* Remove default margin */
         }
 
         .top-bar {
@@ -97,6 +98,47 @@
             transform: scale(1.05);
             box-shadow: 0 0 40px rgba(255, 204, 0, 1);
         }
+
+        .redeem-btn {
+            background: linear-gradient(90deg, #28a745, #218838); /* Green gradient */
+            color: white;
+            font-size: 1.6rem;
+            padding: 30px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 500px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.8);
+        }
+
+        .redeem-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(40, 167, 69, 1);
+        }
+
+        /* Media Queries for Mobile Support */
+        @media (max-width: 600px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .top-bar span {
+                margin-bottom: 10px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn, .special-btn, .redeem-btn {
+                font-size: 1.4rem;
+                padding: 20px; /* Adjust padding for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -111,6 +153,7 @@
         <h2>Earn by Playing Games</h2>
         <button class="btn" onclick="window.location.href='Earn.html'">Earn by Playing Games</button>
         <button class="special-btn" onclick="window.location.href='tasks.html'">Watch Ads and Complete Tasks to Earn</button>
+        <button class="btn" onclick="window.location.href='promocode.html'">Redeem PromoCode</button>
     </div>
 
     <script>
