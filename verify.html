@@ -11,11 +11,11 @@
             background: #121212;
             color: white;
             padding: 50px;
-            margin: 0; /* Added to remove default body margin */
-            display: flex; /* Added for centering */
-            justify-content: center; /* Added for centering */
-            align-items: center; /* Added for centering */
-            min-height: 100vh; /* Added for full viewport height */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
             max-width: 400px;
@@ -52,40 +52,82 @@
         }
     </style>
     <script>
+        function getCurrentDate() {
+            return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        }
+
+        function increaseStreak() {
+            let lastCompleted = localStorage.getItem("lastTaskDate");
+            let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
+            let today = getCurrentDate();
+
+            if (lastCompleted === today) {
+                return false; // Task already completed today
+            }
+
+            if (lastCompleted) {
+                let lastDate = new Date(lastCompleted);
+                let todayDate = new Date(today);
+                let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
+
+                if (difference === 1) {
+                    streak++; // Continue streak
+                } else {
+                    streak = 1; // Reset streak
+                }
+            } else {
+                streak = 1;
+            }
+
+            localStorage.setItem("lastTaskDate", today);
+            localStorage.setItem("streakCounter", streak);
+            return true;
+        }
+
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
             const hasEarned = localStorage.getItem("hasEarnedCoins");
+            let success = false;
 
             if (urlParams.has("verified")) {
                 if (!hasEarned) {
                     setTimeout(() => {
                         let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
-                        localStorage.setItem("redeemCoins", coins + 2);
-                        localStorage.setItem("hasEarnedCoins", "true"); // Mark as earned
-                        document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
-                        document.querySelector('.loader').style.display = 'none'; // Hide loader
+                        localStorage.setItem("redeemCoins", coins + 1);
+                        localStorage.setItem("hasEarnedCoins", "true");
+
+                        success = increaseStreak();
+
+                        if (success) {
+                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins! (+1 Streak)";
+                        } else {
+                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
+                        }
+
+                        document.querySelector('.loader').style.display = 'none';
                     }, 2000);
                 } else {
                     setTimeout(() => {
-                        document.getElementById("status").innerHTML = "❌ You have already earned coins from this link.";
-                        document.querySelector('.loader').style.display = 'none'; // Hide loader
+                        document.getElementById("status").innerHTML = "❌ You have already earned coins from this link today.";
+                        document.querySelector('.loader').style.display = 'none';
                     }, 2000);
                 }
             } else {
                 setTimeout(() => {
                     document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
                     document.getElementById("retry").style.display = "block";
-                    document.querySelector('.loader').style.display = 'none'; // Hide loader
+                    document.querySelector('.loader').style.display = 'none';
                 }, 2000);
             }
         }
+
         window.onload = verifyRedirect;
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Verification</h1> <!-- Changed title -->
+        <h1>Verification</h1>
         <div class="loader"></div>
         <h2 id="status">Checking...</h2>
         <button id="retry" class="btn" style="display: none;" onclick="location.href='https://cuty.io'">Retry</button>
