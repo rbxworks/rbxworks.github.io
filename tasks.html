@@ -44,13 +44,44 @@
         .btn:hover {
             background: #e6b800;
         }
+        .timer {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #ff6666;
+        }
     </style>
     <script>
         function loadStreak() {
             document.getElementById("streak").textContent = localStorage.getItem("streakCounter") || 0;
         }
 
-        window.onload = loadStreak;
+        function startTimer() {
+            const now = new Date().getTime();
+            const storedTime = localStorage.getItem("lastTaskTime") || 0;
+            const targetTime = parseInt(storedTime) + 24 * 60 * 60 * 1000;
+            
+            function updateTimer() {
+                const currentTime = new Date().getTime();
+                const timeLeft = targetTime - currentTime;
+                
+                if (timeLeft > 0) {
+                    const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+                    const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+                    const seconds = Math.floor((timeLeft / 1000) % 60);
+                    document.getElementById("timer").textContent = `Next task in: ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    document.getElementById("timer").textContent = "You can do a task now!";
+                }
+            }
+            
+            setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        window.onload = function() {
+            loadStreak();
+            startTimer();
+        };
     </script>
 </head>
 <body>
@@ -58,6 +89,7 @@
         <h1>Earn Rewards</h1>
         <p>After getting a <span class="highlight">30-day streak</span>, you can redeem <span class="highlight">ANY</span> amount of Robux if you have them in your Discord bot balance.</p>
         <h2>Current Streak: <span id="streak">0</span> days</h2>
+        <p class="timer" id="timer">Loading...</p>
         <a href="https://shrinkme.ink/tvNUVwa" class="btn">Do Tasks</a>
     </div>
 </body>
