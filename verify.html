@@ -50,6 +50,9 @@
         .btn:hover {
             background: #e6b800;
         }
+        .hidden {
+            display: none;
+        }
     </style>
     <script>
         function getCurrentDate() {
@@ -72,6 +75,15 @@
             return streak;
         }
 
+        function redeemReward() {
+            if (localStorage.getItem("redeemed30DayStreak")) {
+                alert("You have already redeemed this reward.");
+                return;
+            }
+            localStorage.setItem("redeemed30DayStreak", "true");
+            location.href = "https://yourwebsite.com/redeem"; // Change to actual redemption link
+        }
+
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
@@ -80,23 +92,18 @@
             if (urlParams.has("verified")) {
                 setTimeout(() => {
                     streak = completeTask();
-                    if (streak) {
-                        document.getElementById("status").innerHTML = `✅ Verified! You earned 1 Redeem Coin! (Streak: ${streak} days)`;
-                    } else {
-                        document.getElementById("status").innerHTML = "❌ You have already completed this task today.";
-                    }
+                    document.getElementById("verificationScreen").classList.add("hidden");
+                    document.getElementById("verifiedScreen").classList.remove("hidden");
+                    document.getElementById("streakCount").innerText = streak;
                     
-                    if (streak === 30) {
+                    if (streak === 30 && !localStorage.getItem("redeemed30DayStreak")) {
                         document.getElementById("redeemBtn").style.display = "block";
                     }
-                    
-                    document.querySelector('.loader').style.display = 'none';
                 }, 2000);
             } else {
                 setTimeout(() => {
-                    document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
-                    document.getElementById("retry").style.display = "block";
-                    document.querySelector('.loader').style.display = 'none';
+                    document.getElementById("verificationScreen").classList.add("hidden");
+                    document.getElementById("notVerifiedScreen").classList.remove("hidden");
                 }, 2000);
             }
         }
@@ -105,12 +112,22 @@
     </script>
 </head>
 <body>
-    <div class="container">
+    <div id="verificationScreen" class="container">
         <h1>Verification</h1>
         <div class="loader"></div>
         <h2 id="status">Checking...</h2>
-        <button id="retry" class="btn" style="display: none;" onclick="location.href='redeemfullbalance.html'">Retry</button>
-        <button id="redeemBtn" class="btn" style="display: none;" onclick="alert('Redeemed 30-day streak reward!')">Redeem Now</button>
+    </div>
+    
+    <div id="verifiedScreen" class="container hidden">
+        <h1>✅ Verified!</h1>
+        <h2>You earned 1 Redeem Coin! (Streak: <span id="streakCount"></span> days)</h2>
+        <button id="redeemBtn" class="btn" style="display: none;" onclick="redeemReward()">Redeem Now</button>
+    </div>
+    
+    <div id="notVerifiedScreen" class="container hidden">
+        <h1>❌ Not Verified!</h1>
+        <h2>Please complete the task properly.</h2>
+        <button class="btn" onclick="location.href='https://cuty.io'">Retry</button>
     </div>
 </body>
 </html>
