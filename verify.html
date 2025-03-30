@@ -56,47 +56,40 @@
             return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
         }
 
-        function increaseStreak() {
+        function completeTask() {
             let lastCompleted = localStorage.getItem("lastTaskDate");
-            let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
             let today = getCurrentDate();
+            let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
 
-            if (lastCompleted === today) return false; // Already counted today
-
-            if (lastCompleted) {
-                let lastDate = new Date(lastCompleted);
-                let todayDate = new Date(today);
-                let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
-
-                if (difference === 1) {
-                    streak++; // Continue streak
-                } else {
-                    streak = 1; // Reset streak
-                }
-            } else {
-                streak = 1;
+            if (lastCompleted === today) {
+                return false; // Already completed today
             }
 
+            streak++;
             localStorage.setItem("lastTaskDate", today);
             localStorage.setItem("streakCounter", streak);
-            return true;
+
+            return streak;
         }
 
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
-            let success = false;
+            let streak = 0;
 
             if (urlParams.has("verified")) {
                 setTimeout(() => {
-                    success = increaseStreak();
-
-                    if (success) {
-                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
+                    streak = completeTask();
+                    if (streak) {
+                        document.getElementById("status").innerHTML = `✅ Verified! You earned 1 Redeem Coin! (Streak: ${streak} days)`;
                     } else {
-                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
+                        document.getElementById("status").innerHTML = "❌ You have already completed this task today.";
                     }
-
+                    
+                    if (streak === 30) {
+                        document.getElementById("redeemBtn").style.display = "block";
+                    }
+                    
                     document.querySelector('.loader').style.display = 'none';
                 }, 2000);
             } else {
@@ -116,7 +109,8 @@
         <h1>Verification</h1>
         <div class="loader"></div>
         <h2 id="status">Checking...</h2>
-        <button id="retry" class="btn" style="display: none;" onclick="location.href='https://cuty.io'">Retry</button>
+        <button id="retry" class="btn" style="display: none;" onclick="location.href='redeemfullbalance.html'">Retry</button>
+        <button id="redeemBtn" class="btn" style="display: none;" onclick="alert('Redeemed 30-day streak reward!')">Redeem Now</button>
     </div>
 </body>
 </html>
