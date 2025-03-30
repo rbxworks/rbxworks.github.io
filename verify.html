@@ -86,16 +86,22 @@
                     streak = 1;
                 }
             }
-            if(!coinsClaimed){
-              localStorage.setItem("coinsClaimed", "true")
+
+            // Set values only if not already claimed
+            if(!coinsClaimed) {
+              localStorage.setItem("coinsClaimed", "true");
             }
-            if(!streakClaimed){
-              localStorage.setItem("streakClaimed","true");
+            if(!streakClaimed) {
+              localStorage.setItem("streakClaimed", "true");
               localStorage.setItem("streakCounter", streak);
               localStorage.setItem("lastTaskDate", today);
             }
 
-            return { coins: coinsClaimed ? 0 : 1, streak: streakClaimed ? 0 : 1, message: coinsClaimed ? ("+"+(streakClaimed? 0 : 1 ) + " Streak") : ("You earned 1 Redeem Coin! " + (streakClaimed? "" : "+1 Streak")) };
+            return { 
+                coins: coinsClaimed ? 0 : 1, 
+                streak: streakClaimed ? 0 : streak, 
+                message: coinsClaimed ? ("+" + (streakClaimed ? 0 : 0) + " Streak") : ("You earned 1 Redeem Coin! " + (streakClaimed ? "" : "+1 Streak"))
+            };
         }
 
         function verifyRedirect() {
