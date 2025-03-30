@@ -56,68 +56,57 @@
             return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
         }
 
-        function increaseStreakAndCoins() {
+        function increaseStreak() {
             let lastCompleted = localStorage.getItem("lastTaskDate");
             let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
             let today = getCurrentDate();
-            let coinsClaimed = localStorage.getItem("coinsClaimed") === "true";
-            let streakClaimed = localStorage.getItem("streakClaimed") === "true";
 
-            if (coinsClaimed && streakClaimed) {
-                return { coins: 0, streak: 0, message: "You have already claimed your coins and streak." };
-            }
+            if (lastCompleted === today) return false; // Already counted today
 
-            if (lastCompleted === today) {
-                return { coins: coinsClaimed ? 0 : 1, streak: 0, message: coinsClaimed ? "You have already claimed your coins today." : "You earned 1 Redeem Coin." };
-            }
+            if (lastCompleted) {
+                let lastDate = new Date(lastCompleted);
+                let todayDate = new Date(today);
+                let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
 
-            if (!streakClaimed) {
-                if (lastCompleted) {
-                    let lastDate = new Date(lastCompleted);
-                    let todayDate = new Date(today);
-                    let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
-
-                    if (difference === 1) {
-                        streak++; // Continue streak
-                    } else {
-                        streak = 1; // Reset streak
-                    }
+                if (difference === 1) {
+                    streak++; // Continue streak
                 } else {
-                    streak = 1;
+                    streak = 1; // Reset streak
                 }
+            } else {
+                streak = 1;
             }
 
-            // Set values only if not already claimed
-            if(!coinsClaimed) {
-              localStorage.setItem("coinsClaimed", "true");
-            }
-            if(!streakClaimed) {
-              localStorage.setItem("streakClaimed", "true");
-              localStorage.setItem("streakCounter", streak);
-              localStorage.setItem("lastTaskDate", today);
-            }
-
-            return { 
-                coins: coinsClaimed ? 0 : 1, 
-                streak: streakClaimed ? 0 : streak, 
-                message: coinsClaimed ? ("+" + (streakClaimed ? 0 : 0) + " Streak") : ("You earned 1 Redeem Coin! " + (streakClaimed ? "" : "+1 Streak"))
-            };
+            localStorage.setItem("lastTaskDate", today);
+            localStorage.setItem("streakCounter", streak);
+            return true;
         }
 
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
-            let result = { coins: 0, streak: 0, message: "❌ Not Verified! Please complete the task properly." };
+            let success = false;
 
             if (urlParams.has("verified")) {
                 setTimeout(() => {
-                    result = increaseStreakAndCoins();
-                    document.getElementById("status").innerHTML = "✅ Verified! " + result.message;
+                    if (localStorage.getItem("redeemed") === null) {
+                        success = increaseStreak();
+
+                        if (success) {
+                            document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
+                        } else {
+                            document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
+                        }
+                        localStorage.setItem("redeemed","true");
+                    } else {
+                        document.getElementById("status").innerHTML = "✅ Verified! Redeem already used.";
+                    }
+
                     document.querySelector('.loader').style.display = 'none';
                 }, 2000);
             } else {
                 setTimeout(() => {
-                    document.getElementById("status").innerHTML = result.message;
+                    document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
                     document.getElementById("retry").style.display = "block";
                     document.querySelector('.loader').style.display = 'none';
                 }, 2000);
