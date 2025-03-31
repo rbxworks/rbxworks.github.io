@@ -8,7 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background: #121212;
+            background: url('https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             padding: 50px;
             margin: 0;
@@ -20,7 +21,7 @@
         .container {
             max-width: 400px;
             padding: 20px;
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.9);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
@@ -31,15 +32,15 @@
         .btn {
             background: #ffcc00;
             color: black;
-            padding: 12px 24px;
+            padding: 14px 30px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            display: block;
-            width: 100%;
+            display: inline-block;
             text-decoration: none;
             margin-top: 20px;
+            font-size: 1.2em;
         }
         .btn:hover {
             background: #e6b800;
@@ -89,7 +90,7 @@
         <h1>Earn Rewards</h1>
         <p>After getting a <span class="highlight">30-day streak</span>, you can redeem <span class="highlight">ANY</span> amount of Robux if you have them in your Discord bot balance.</p>
         <h2>Current Streak: <span id="streak">0</span> days</h2>
-        <p class="timer" id="timer">Loading...</p>
+        <p class="timer" id="timer"></p>
         <a href="https://shrinkme.ink/tvNUVwa" class="btn">Do Tasks</a>
     </div>
 </body>
