@@ -53,7 +53,7 @@
     </style>
     <script>
         function getCurrentDate() {
-            return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            return new Date().toISOString().split('T')[0];
         }
 
         function increaseStreak() {
@@ -61,7 +61,7 @@
             let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
             let today = getCurrentDate();
 
-            if (lastCompleted === today) return false; // Already counted today
+            if (lastCompleted === today) return false;
 
             if (lastCompleted) {
                 let lastDate = new Date(lastCompleted);
@@ -69,9 +69,9 @@
                 let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
 
                 if (difference === 1) {
-                    streak++; // Continue streak
+                    streak++;
                 } else {
-                    streak = 1; // Reset streak
+                    streak = 1;
                 }
             } else {
                 streak = 1;
@@ -86,23 +86,16 @@
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
             let success = false;
-            const redeemId = urlParams.get("redeemId");
 
-            if (urlParams.has("verified") && redeemId) {
+            if (urlParams.has("verified")) {
                 setTimeout(() => {
-                    if (localStorage.getItem(`redeemed_${redeemId}`) === null) {
-                        success = increaseStreak();
+                    success = increaseStreak();
 
-                        if (success) {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
-                        } else {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
-                        }
-                        localStorage.setItem(`redeemed_${redeemId}`, "true");
+                    if (success) {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
                     } else {
-                        document.getElementById("status").innerHTML = "✅ Verified! Redeem already used.";
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
                     }
-
                     document.querySelector('.loader').style.display = 'none';
                 }, 2000);
             } else {
