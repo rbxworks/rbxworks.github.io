@@ -86,10 +86,11 @@
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
             let success = false;
+            const redeemId = urlParams.get("redeemId");
 
-            if (urlParams.has("verified")) {
+            if (urlParams.has("verified") && redeemId) {
                 setTimeout(() => {
-                    if (localStorage.getItem("redeemed") === null) {
+                    if (localStorage.getItem(`redeemed_${redeemId}`) === null) {
                         success = increaseStreak();
 
                         if (success) {
@@ -97,7 +98,7 @@
                         } else {
                             document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
                         }
-                        localStorage.setItem("redeemed","true");
+                        localStorage.setItem(`redeemed_${redeemId}`, "true");
                     } else {
                         document.getElementById("status").innerHTML = "✅ Verified! Redeem already used.";
                     }
