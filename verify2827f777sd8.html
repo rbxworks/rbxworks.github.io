@@ -53,7 +53,7 @@
     </style>
     <script>
         function getCurrentDate() {
-            return new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            return new Date().toISOString().split('T')[0];
         }
 
         function increaseStreak() {
@@ -62,7 +62,8 @@
             let today = getCurrentDate();
 
             if (lastCompleted === today) {
-                return false; // Task already completed today
+                console.log("Streak not increased: Task already completed today.");
+                return false;
             }
 
             if (lastCompleted) {
@@ -71,48 +72,50 @@
                 let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
 
                 if (difference === 1) {
-                    streak++; // Continue streak
+                    streak++;
+                    console.log("Streak increased: Consecutive day.");
                 } else {
-                    streak = 1; // Reset streak
+                    streak = 1;
+                    console.log("Streak reset: Not consecutive day.");
                 }
             } else {
                 streak = 1;
+                console.log("Streak started: First task completion.");
             }
 
             localStorage.setItem("lastTaskDate", today);
             localStorage.setItem("streakCounter", streak);
+            console.log("Streak updated:", streak);
             return true;
         }
 
         function verifyRedirect() {
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
-            const hasEarned = localStorage.getItem("hasEarnedCoins");
             let success = false;
+            let pagePath = window.location.pathname;
 
             if (urlParams.has("verified")) {
-                if (!hasEarned) {
+                let redeemed = localStorage.getItem("redeemed_" + pagePath);
+                if(redeemed === "true"){
                     setTimeout(() => {
-                        let coins = parseInt(localStorage.getItem("redeemCoins")) || 0;
-                        localStorage.setItem("redeemCoins", coins + 2);
-                        localStorage.setItem("hasEarnedCoins", "true");
-
-                        success = increaseStreak();
-
-                        if (success) {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins! (+1 Streak)";
-                        } else {
-                            document.getElementById("status").innerHTML = "✅ Verified! You earned 2 Redeem Coins!";
-                        }
-
+                        document.getElementById("status").innerHTML = "❌ Already Redeemed for this page!";
                         document.querySelector('.loader').style.display = 'none';
                     }, 2000);
-                } else {
-                    setTimeout(() => {
-                        document.getElementById("status").innerHTML = "❌ You have already earned coins from this link today.";
-                        document.querySelector('.loader').style.display = 'none';
-                    }, 2000);
+                    return;
                 }
+
+                setTimeout(() => {
+                    success = increaseStreak();
+
+                    if (success) {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
+                    } else {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
+                    }
+                    document.querySelector('.loader').style.display = 'none';
+                    localStorage.setItem("redeemed_" + pagePath, "true");
+                }, 2000);
             } else {
                 setTimeout(() => {
                     document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
