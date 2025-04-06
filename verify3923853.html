@@ -61,7 +61,10 @@
             let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
             let today = getCurrentDate();
 
-            if (lastCompleted === today) return false;
+            if (lastCompleted === today) {
+                console.log("Streak not increased: Task already completed today.");
+                return false;
+            }
 
             if (lastCompleted) {
                 let lastDate = new Date(lastCompleted);
@@ -70,15 +73,19 @@
 
                 if (difference === 1) {
                     streak++;
+                    console.log("Streak increased: Consecutive day.");
                 } else {
                     streak = 1;
+                    console.log("Streak reset: Not consecutive day.");
                 }
             } else {
                 streak = 1;
+                console.log("Streak started: First task completion.");
             }
 
             localStorage.setItem("lastTaskDate", today);
             localStorage.setItem("streakCounter", streak);
+            console.log("Streak updated:", streak);
             return true;
         }
 
@@ -86,11 +93,10 @@
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
             let success = false;
-            let pagePath = window.location.pathname; // Gets the path of the current page
+            let pagePath = window.location.pathname;
 
             if (urlParams.has("verified")) {
-
-                let redeemed = localStorage.getItem("redeemed_" + pagePath); // Uses the page path in the key
+                let redeemed = localStorage.getItem("redeemed_" + pagePath);
                 if(redeemed === "true"){
                     setTimeout(() => {
                         document.getElementById("status").innerHTML = "❌ Already Redeemed for this page!";
@@ -108,7 +114,7 @@
                         document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
                     }
                     document.querySelector('.loader').style.display = 'none';
-                    localStorage.setItem("redeemed_" + pagePath, "true"); // Saves with page path
+                    localStorage.setItem("redeemed_" + pagePath, "true");
                 }, 2000);
             } else {
                 setTimeout(() => {
