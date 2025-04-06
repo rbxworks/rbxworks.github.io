@@ -3,95 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earn Rewards</title>
+    <title>Earn Rewards - Daily Task</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             text-align: center;
-            background: url('https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            padding: 50px;
+            /* Subtle pattern or gradient background */
+            background: linear-gradient(to bottom right, #2a2a2e, #1a1a1a);
+            color: #e0e0e0;
+            padding: 40px 20px;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
         .container {
-            max-width: 400px;
-            padding: 20px;
-            background: rgba(30, 30, 30, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 100%;
+            padding: 35px 30px;
+            background: rgba(44, 44, 44, 0.9); /* Semi-transparent dark container */
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid #555;
+        }
+        h1 {
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 2em;
+        }
+        h2 {
+             color: #ffffff;
+             margin-top: 25px;
+             margin-bottom: 10px;
+             font-weight: 600;
+             font-size: 1.6em;
+        }
+        p {
+            font-size: 1em;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #c0c0c0; /* Slightly lighter grey for paragraphs */
         }
         .highlight {
-            color: #ffcc00;
-            font-weight: bold;
+            color: #f0c419; /* Accent color */
+            font-weight: 600;
         }
+        #streak {
+             font-size: 1.5em; /* Make streak number larger */
+             font-weight: 700;
+             color: #f0c419; /* Accent color for streak number */
+             margin-left: 5px;
+        }
+        .status-message { /* Replaced .timer */
+            font-size: 1.1em;
+            margin: 20px 0;
+            padding: 12px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 280px; /* Ensure consistent width */
+            font-weight: 600;
+        }
+        .status-ready {
+             color: #5cb85c; /* Green when ready */
+        }
+        .status-waiting {
+            color: #f0ad4e; /* Orange when waiting */
+        }
+
         .btn {
-            background: #ffcc00;
-            color: black;
-            padding: 14px 30px;
+            background: #f0c419;
+            color: #1a1a1a;
+            padding: 15px 35px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             display: inline-block;
             text-decoration: none;
             margin-top: 20px;
             font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
         }
-        .btn:hover {
-            background: #e6b800;
+        .btn:hover:not(.disabled) {
+            background: #d8b017;
+            transform: translateY(-3px);
         }
-        .timer {
-            font-size: 1.2em;
-            margin-top: 10px;
-            color: #ff6666;
+        .btn:active:not(.disabled) {
+             transform: translateY(0);
+        }
+        /* Style for the disabled button */
+        .btn.disabled {
+            background: #555; /* Grey background */
+            color: #999; /* Lighter grey text */
+            cursor: not-allowed; /* Indicate non-interactive */
+            opacity: 0.7;
+            pointer-events: none; /* Disable click events */
         }
     </style>
     <script>
-        function loadStreak() {
-            document.getElementById("streak").textContent = localStorage.getItem("streakCounter") || 0;
+        // --- Daily Rotating Link Configuration ---
+        const dailyUrls = [
+            "https://cuty.io/kuG4wBd",  // Day index 0
+            "https://cuty.io/AelmNWIA", // Day index 1
+            "https://cuty.io/ftvDlEfLv", // Day index 2
+            "https://cuty.io/Uwr2",       // Day index 3
+            "https://cuty.io/ifJQmnG7oy", // Day index 4
+            "https://cuty.io/O55cHru",    // Day index 5
+            "https://cuty.io/W1DucInva",  // Day index 6
+            "https://cuty.io/YSxU7GA",    // Day index 7
+            "https://cuty.io/LGHkH",      // Day index 8
+            "https://cuty.io/KD7XeccRb"   // Day index 9
+            // Add more URLs here in the future
+        ];
+        // Set the starting date for the rotation (YYYY-MM-DD format)
+        const startDateForRotation = new Date("2025-04-06"); // Adjust if needed
+        // --- End Configuration ---
+
+        function getCurrentDateYYYYMMDD() {
+            // Returns date in YYYY-MM-DD format consistently
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
-        function startTimer() {
-            const now = new Date().getTime();
-            const storedTime = localStorage.getItem("lastTaskTime") || 0;
-            const targetTime = parseInt(storedTime) + 24 * 60 * 60 * 1000;
-            
-            function updateTimer() {
-                const currentTime = new Date().getTime();
-                const timeLeft = targetTime - currentTime;
-                
-                if (timeLeft > 0) {
-                    const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-                    const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
-                    const seconds = Math.floor((timeLeft / 1000) % 60);
-                    document.getElementById("timer").textContent = `Next task in: ${hours}h ${minutes}m ${seconds}s`;
-                } else {
-                    document.getElementById("timer").textContent = "You can do a task now!";
-                }
+        function getDailyTaskUrl() {
+             // Calculate which day it is in the cycle
+            const today = new Date();
+            // Ensure dates are compared at the start of the day (ignore time)
+            const startDay = new Date(startDateForRotation.getFullYear(), startDateForRotation.getMonth(), startDateForRotation.getDate());
+            const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+            // Calculate difference in milliseconds and convert to days
+            const timeDifference = todayDay.getTime() - startDay.getTime();
+            let dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+            // Handle cases where the current date might be before the start date
+            if (dayDifference < 0) {
+                dayDifference = 0;
             }
-            
-            setInterval(updateTimer, 1000);
-            updateTimer();
+
+            const numberOfUrls = dailyUrls.length;
+             if (numberOfUrls === 0) {
+                 console.error("Daily URL list is empty!");
+                 return "javascript:void(0);"; // Prevent errors, return safe link
+             }
+
+            // Calculate the index for the URL array using modulo
+            const urlIndex = dayDifference % numberOfUrls;
+
+            return dailyUrls[urlIndex];
         }
 
+
+        function loadStreak() {
+            // Load and display the current streak count from localStorage
+            const streakCount = localStorage.getItem("streakCounter") || 0;
+            document.getElementById("streak").textContent = streakCount;
+        }
+
+        function checkTaskAvailability() {
+            const statusElement = document.getElementById("taskStatus"); // Updated ID
+            const taskButton = document.getElementById("taskButton");
+            const todaysTaskUrl = getDailyTaskUrl(); // Get the correct URL for today
+
+            // Get the date of the last successful verification (set by verification.html)
+            const lastCompletedDate = localStorage.getItem("lastTaskDate");
+            const todayDate = getCurrentDateYYYYMMDD();
+
+            console.log("Last completed date:", lastCompletedDate);
+            console.log("Today's date:", todayDate);
+            console.log("Today's Task URL:", todaysTaskUrl);
+
+
+            if (lastCompletedDate === todayDate) {
+                // Task already completed today
+                statusElement.textContent = "You've done your task today. Come back tomorrow!";
+                statusElement.className = 'status-message status-waiting'; // Apply waiting style
+                taskButton.classList.add("disabled"); // Add disabled class
+                taskButton.href = "javascript:void(0);"; // Prevent navigation
+                console.log("Task button disabled: Already completed today.");
+            } else {
+                // Task not completed today, enable button
+                statusElement.textContent = "You can complete your daily task now!";
+                statusElement.className = 'status-message status-ready'; // Apply ready style
+                taskButton.classList.remove("disabled"); // Remove disabled class
+                taskButton.href = todaysTaskUrl; // Set the correct link FOR TODAY
+                console.log("Task button enabled.");
+            }
+        }
+
+        // Run initialization functions when the page loads
         window.onload = function() {
             loadStreak();
-            startTimer();
+            checkTaskAvailability(); // Check if task can be done today and set the correct link
         };
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Earn Rewards</h1>
-        <p>After getting a <span class="highlight">30-day streak</span>, you can redeem <span class="highlight">ANY</span> amount of Robux if you have them in your Discord bot balance.</p>
+        <h1>Daily Task Rewards</h1>
+        <p>Complete a task daily to build your streak. After achieving a <span class="highlight">30-day streak</span>, you unlock special redemption options!</p>
+
         <h2>Current Streak: <span id="streak">0</span> days</h2>
-        <p class="timer" id="timer"></p>
-        <a href="https://cuty.io/x7CTa9" class="btn">Do Tasks</a>
+
+        <div id="taskStatus" class="status-message">Checking task availability...</div>
+
+        <a href="javascript:void(0);" class="btn disabled" id="taskButton">Complete Today's Task</a>
+         <p style="font-size: 0.8em; margin-top: 15px; color: #aaa;">You will be redirected to complete a short task.</p>
     </div>
 </body>
 </html>
