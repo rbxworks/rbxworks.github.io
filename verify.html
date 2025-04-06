@@ -86,13 +86,14 @@
             document.getElementById("status").innerHTML = "Verifying...";
             const urlParams = new URLSearchParams(window.location.search);
             let success = false;
+            let pagePath = window.location.pathname; // Gets the path of the current page
 
             if (urlParams.has("verified")) {
 
-                let redeemed = localStorage.getItem("redeemed");
+                let redeemed = localStorage.getItem("redeemed_" + pagePath); // Uses the page path in the key
                 if(redeemed === "true"){
                     setTimeout(() => {
-                        document.getElementById("status").innerHTML = "❌ Already Redeemed!";
+                        document.getElementById("status").innerHTML = "❌ Already Redeemed for this page!";
                         document.querySelector('.loader').style.display = 'none';
                     }, 2000);
                     return;
@@ -107,7 +108,7 @@
                         document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
                     }
                     document.querySelector('.loader').style.display = 'none';
-                    localStorage.setItem("redeemed", "true");
+                    localStorage.setItem("redeemed_" + pagePath, "true"); // Saves with page path
                 }, 2000);
             } else {
                 setTimeout(() => {
