@@ -34,3 +34,99 @@
             margin: 20px auto;
         }
         @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn {
+            background: #ffcc00;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #e6b800;
+        }
+    </style>
+    <script>
+        function getCurrentDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function increaseStreak() {
+            let lastCompleted = localStorage.getItem("lastTaskDate");
+            let streak = parseInt(localStorage.getItem("streakCounter")) || 0;
+            let today = getCurrentDate();
+
+            if (lastCompleted === today) return false;
+
+            if (lastCompleted) {
+                let lastDate = new Date(lastCompleted);
+                let todayDate = new Date(today);
+                let difference = (todayDate - lastDate) / (1000 * 60 * 60 * 24);
+
+                if (difference === 1) {
+                    streak++;
+                } else {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+
+            localStorage.setItem("lastTaskDate", today);
+            localStorage.setItem("streakCounter", streak);
+            return true;
+        }
+
+        function verifyRedirect() {
+            document.getElementById("status").innerHTML = "Verifying...";
+            const urlParams = new URLSearchParams(window.location.search);
+            let success = false;
+
+            if (urlParams.has("verified")) {
+
+                let redeemed = localStorage.getItem("redeemed");
+                if(redeemed === "true"){
+                    setTimeout(() => {
+                        document.getElementById("status").innerHTML = "❌ Already Redeemed!";
+                        document.querySelector('.loader').style.display = 'none';
+                    }, 2000);
+                    return;
+                }
+
+                setTimeout(() => {
+                    success = increaseStreak();
+
+                    if (success) {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins! (+1 Streak)";
+                    } else {
+                        document.getElementById("status").innerHTML = "✅ Verified! You earned 1 Redeem Coins!";
+                    }
+                    document.querySelector('.loader').style.display = 'none';
+                    localStorage.setItem("redeemed", "true");
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    document.getElementById("status").innerHTML = "❌ Not Verified! Please complete the task properly.";
+                    document.getElementById("retry").style.display = "block";
+                    document.querySelector('.loader').style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        window.onload = verifyRedirect;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Verification</h1>
+        <div class="loader"></div>
+        <h2 id="status">Checking...</h2>
+        <button id="retry" class="btn" style="display: none;" onclick="location.href='https://cuty.io'">Retry</button>
+    </div>
+</body>
+</html>
