@@ -3,143 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - rbxworks</title> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        body, html {
+        /* CSS Variables for consistent theme */
+        :root {
+            --bg-gradient-start: #1f2937; /* Dark Gray Blue */
+            --bg-gradient-end: #111827; /* Darker Gray Blue */
+            --card-bg: rgba(31, 41, 55, 0.65); /* Slightly more opaque card */
+            --accent-color: #38bdf8; /* Light Sky Blue */
+            --accent-hover: #0ea5e9; /* Slightly Darker Sky Blue */
+            --text-primary: #f3f4f6; /* Light Gray */
+            --text-secondary: #9ca3af; /* Medium Gray */
+            --border-color: rgba(107, 114, 128, 0.3); /* Gray border */
+            --input-bg: rgba(55, 65, 81, 0.5); /* Input background */
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --card-blur: 8px;
+            --border-radius-main: 12px;
+            --border-radius-small: 8px;
+        }
+
+        /* Reset and Base Styles */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
             height: 100%;
+        }
+
+        body {
             font-family: 'Poppins', sans-serif;
-            color: white;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)) no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-primary);
             text-align: center;
-            background: url('https://images.pexels.com/photos/355770/pexels-photo-355770.jpeg') no-repeat center center/cover;
+            margin: 0;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; /* Stack top-bar and container */
+            justify-content: center; /* Center container vertically */
+            align-items: center; /* Center container horizontally */
+            min-height: 100%;
+            line-height: 1.7;
+            padding: 20px; /* Add some padding around the container */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Minimal Top Bar for Login Page */
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
             width: 100%;
-            position: fixed;
+            padding: 15px 30px;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(var(--card-blur));
+            -webkit-backdrop-filter: blur(var(--card-blur));
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            position: fixed; /* Keep at top */
             top: 0;
-            background: rgba(0, 0, 0, 0.7);
-            font-size: 1.2rem;
-            font-family: 'Press Start 2P', cursive;
-            text-shadow: 0 0 5px #ffcc00;
+            left: 0;
+            z-index: 100;
+            text-align: left; /* Align brand name left */
         }
 
-        .highlight {
-            color: #ffcc00;
+        .brand-name {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--text-primary);
         }
 
+        .brand-name i { /* Optional Icon */
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+
+        /* Login Container - Consistent Glassmorphism */
         .container {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            background: var(--card-bg);
+            padding: 40px 45px;
+            border-radius: var(--border-radius-main);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            backdrop-filter: blur(var(--card-blur));
+            -webkit-backdrop-filter: blur(var(--card-blur));
+            border: 1px solid var(--border-color);
             text-align: center;
-            margin-top: 80px;
-            max-width: 400px;
+            max-width: 420px; /* Slightly wider */
+            width: 100%; /* Responsive width */
+            margin-top: 80px; /* Space below fixed top bar */
         }
 
+        /* Heading Style */
         h1 {
-            font-size: 2.2rem;
-            text-shadow: 0 0 20px #ffcc00, 0 0 40px #ffcc00;
-            margin-bottom: 20px;
+            font-size: 2.3rem; /* Adjusted size */
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Input Field Style */
+        .input-group { /* Wrapper for potential icon placement */
+            position: relative;
+            margin-bottom: 25px;
         }
 
         .input-box {
-            padding: 12px;
+            padding: 15px 20px; /* More padding */
             font-size: 1rem;
-            width: 90%;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            border: 2px solid #ffcc00;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            width: 100%; /* Full width within container */
+            border-radius: var(--border-radius-small);
+            border: 1px solid var(--border-color);
+            text-align: left; /* Standard text alignment */
+            background: var(--input-bg);
+            color: var(--text-primary);
             outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
+        .input-box::placeholder { /* Style placeholder */
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .input-box:focus { /* Focus state */
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3); /* Subtle glow */
+        }
+
+        /* Login Button Style - Consistent with previous page */
         .btn {
-            background: linear-gradient(90deg, #ff6600, #ffcc00);
-            color: white;
-            font-size: 1.2rem;
-            padding: 12px 30px;
+            display: inline-flex; /* Align icon */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space for icon */
+            background-color: var(--accent-color);
+            color: var(--bg-gradient-end); /* Dark text */
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 14px 30px; /* Adjusted padding */
             border: none;
-            border-radius: 10px;
+            border-radius: var(--border-radius-small);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
-            width: 100%;
-            margin-top: 10px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.25);
+            width: 100%; /* Full width button */
+            margin-top: 10px; /* Space above button */
         }
 
         .btn:hover {
-            transform: scale(1.05);
+            background-color: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(56, 189, 248, 0.4);
         }
+
+        .btn:active {
+             transform: translateY(-1px);
+             box-shadow: 0 3px 8px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px; /* Less padding on small screens */
+            }
+            .top-bar {
+                padding: 12px 20px;
+            }
+            .brand-name {
+                font-size: 1.1rem;
+            }
+            .container {
+                padding: 30px 25px;
+                margin-top: 70px; /* Adjust for potentially smaller top bar */
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .input-box {
+                padding: 12px 15px;
+            }
+            .btn {
+                font-size: 1rem;
+                padding: 12px 25px;
+            }
+        }
+
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    <span id="welcome-message"></span>
-    <span>💰 <span id="coin-balance" class="highlight">0</span> Redeem Coins</span>
-</div>
+    <span class="brand-name">
+        <i class="fa-solid fa-cubes"></i> rbxworks
+    </span>
+    </div>
 
 <div class="container">
-    <h1>Login</h1>
-    <input type="text" id="username" class="input-box" placeholder="Enter Username">
-    <button class="btn" onclick="login()">Login</button>
+    <h1>Account Login</h1> <div class="input-group">
+        <input type="text" id="username" class="input-box" placeholder="Enter Username">
+    </div>
+    <button class="btn" onclick="login()">
+        <i class="fa-solid fa-right-to-bracket"></i> Login
+    </button>
 </div>
 
 <script>
+    // Coin functions (kept in case used elsewhere, but not directly by this login)
     function getRedeemCoins() {
         return parseFloat(localStorage.getItem("redeemCoins")) || 0;
     }
 
     function setRedeemCoins(amount) {
         localStorage.setItem("redeemCoins", amount);
-        document.getElementById("coin-balance").innerText = amount;
+        // No element to update on this page directly
     }
 
+    // Login Function (Unchanged Logic)
     function login() {
-        let username = document.getElementById("username").value.trim();
+        let usernameInput = document.getElementById("username");
+        let username = usernameInput.value.trim();
         if (username === "") {
             alert("Please enter a username!");
+             usernameInput.focus(); // Focus back on input
+             // Add visual feedback for error (optional)
+             usernameInput.style.borderColor = '#f87171'; // Example: Red border
+             setTimeout(() => { usernameInput.style.borderColor = 'var(--border-color)'; }, 2000); // Reset after 2s
             return;
         }
 
         localStorage.setItem("username", username);
-        window.location.href = "Surveys.html"; 
+        // Optionally set initial coins for new user if desired
+        // if (getRedeemCoins() === 0) { // Example: Set initial coins only if zero
+        //     setRedeemCoins(10);
+        // }
+        window.location.href = "Surveys.html"; // Redirect to main page after login
     }
 
-    function updateUI() {
-        let username = localStorage.getItem("username");
-        if (username) {
-            document.getElementById("welcome-message").innerText = `Welcome ${username}`;
-            document.getElementById("coin-balance").innerText = getRedeemCoins();
-        }
-    }
-
+    // Check Login Status (Unchanged Logic)
     function checkLoginStatus() {
         if (localStorage.getItem("username")) {
-            window.location.href = "Surveys.html"; // Redirect if already logged in
+            // If user is already logged in, redirect them away from the login page
+            window.location.href = "Surveys.html";
         }
     }
 
+    // Run on page load
     document.addEventListener("DOMContentLoaded", () => {
-        updateUI();
-        checkLoginStatus();
+        // No need to call updateUI as top bar is static here
+        checkLoginStatus(); // Check if already logged in
     });
 </script>
 
