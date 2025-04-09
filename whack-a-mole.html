@@ -5,172 +5,418 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whack-a-Mole - Earn Coins</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start 2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            background: linear-gradient(135deg, #2E3192, #1BFFFF);
-            color: white;
-            padding-top: 60px;
+        /* CSS Variables for consistent theme */
+        :root {
+            --bg-gradient-start: #1f2937;
+            --bg-gradient-end: #111827;
+            --card-bg: rgba(31, 41, 55, 0.75); /* Slightly more opaque */
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-highlight: #fde047; /* Yellow for score/coins */
+            --border-color: rgba(107, 114, 128, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --card-blur: 6px; /* Slightly less blur */
+            --border-radius-main: 12px;
+            --border-radius-small: 8px;
+            --hole-inner: #2d3748;
+            --hole-outer: #4a5568;
+            --mole-body: #8b5e3c; /* Brownish */
+            --mole-nose: #f472b6; /* Pinkish */
+            --whacked-color: rgba(255, 82, 82, 0.7);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { height: 100%; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)) no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-primary);
+            text-align: center;
+            min-height: 100%;
+            padding: 20px;
+            padding-top: 80px; /* Space for fixed top bar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Consistent Top Bar */
         .top-bar {
             width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 0;
+            padding: 12px 25px;
+            background: rgba(17, 24, 39, 0.9); /* Darker, less transparent */
+            backdrop-filter: blur(var(--card-blur));
+            -webkit-backdrop-filter: blur(var(--card-blur));
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
             position: fixed;
             top: 0;
             left: 0;
-            font-size: 1.5rem;
-            font-family: 'Press Start 2P', cursive;
-            color: #fff;
-            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .redeem-coins {
-            font-size: 1.3rem;
-            font-family: 'Press Start 2P', cursive;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-            margin-top: 20px;
+        .top-bar .title {
+            font-weight: 600;
+            font-size: 1.2rem;
         }
+        .top-bar .title i { margin-right: 8px; color: var(--accent-color); }
 
+        .game-stats {
+            display: flex;
+            gap: 15px 20px; /* Row and col gap */
+            font-size: 1rem;
+            font-weight: 500;
+            flex-wrap: wrap; /* Allow stats to wrap */
+            justify-content: center; /* Center stats when wrapped */
+        }
+        .game-stats > div { /* Ensure spacing for wrapped items */
+             white-space: nowrap;
+        }
+        .game-stats span { color: var(--text-highlight); font-weight: 700; margin-left: 5px; }
+        .game-stats i { margin-right: 5px; color: var(--accent-color); opacity: 0.8; }
+
+        /* Game Area */
         .game-container {
             display: grid;
             grid-template-columns: repeat(3, 100px);
             gap: 20px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 25px; /* More padding */
+            background: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 25px var(--shadow-color);
+            cursor: grab; /* Use grab cursor for game area */
+             user-select: none; /* Prevent text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .game-container:active {
+             cursor: grabbing;
         }
 
         .hole {
             width: 100px;
             height: 100px;
-            background: #222;
+            background-color: var(--hole-inner);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid var(--hole-outer);
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.6); /* Inner shadow for depth */
+            transition: transform 0.1s ease-out; /* slight effect on click */
+        }
+        /* Optional: slight visual feedback on click/touch */
+        .hole:active {
+             transform: scale(0.97);
         }
 
         .mole {
-            width: 80px;
-            height: 80px;
-            background: brown;
-            border-radius: 50%;
-            display: none;
-            cursor: pointer;
-            animation: molePop 0.3s ease-in-out;
+            width: 70%; /* Slightly smaller mole */
+            height: 70%;
+            border-radius: 45% 45% 50% 50%; /* More oval shape */
+            position: absolute;
+            bottom: 5%; /* Adjust starting position based on transform */
+            left: 15%;
+            /* CSS Gradient Mole */
+            background: radial-gradient(circle at 50% 90%, var(--mole-body) 60%, #6F4E37 100%); /* Darker bottom */
+            box-shadow: inset 0 -4px 6px rgba(0,0,0,0.3);
+            /* Add a simple nose */
+            border-top: 5px solid var(--mole-nose); /* Nose as border */
+
+            /* Animation Setup */
+            transform: translateY(110%); /* Start completely hidden below */
+            visibility: hidden;
+            opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), /* Pop up easing */
+                        visibility 0s linear 0.25s,
+                        opacity 0.15s linear;
+            pointer-events: none; /* Cannot interact when hidden */
         }
 
-        button {
-            margin-top: 20px;
-            padding: 12px 24px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            background: #ff5733;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+        .mole.up {
+            transform: translateY(15%); /* Popped up position */
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0s;
+            pointer-events: auto; /* Can interact when up */
         }
 
-        button:hover {
-            background: #c70039;
+        .mole.whacked {
+            animation: moleWhacked 0.4s ease-out forwards;
+            pointer-events: none; /* Cannot interact while being whacked */
         }
 
-        @keyframes molePop {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
+        /* Whacked Animation (CSS Only) */
+        @keyframes moleWhacked {
+            0% { transform: translateY(15%) scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+            30% { transform: translateY(10%) scale(1.1) rotate(15deg); filter: brightness(1.2); } /* Slight jump and brighten */
+            100% { transform: translateY(110%) scale(0.4) rotate(-60deg); opacity: 0; filter: brightness(0.5); } /* Fly down, shrink, rotate, dim */
         }
+
+
+        /* Buttons */
+        .controls { display: flex; gap: 15px; margin-top: 10px; }
+
+        .btn { /* Consistent button styling */
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background-color: var(--accent-color); color: var(--bg-gradient-end);
+            font-size: 1rem; font-weight: 600; padding: 12px 25px;
+            border: none; border-radius: var(--border-radius-small);
+            cursor: pointer; transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.25);
+            white-space: nowrap;
+        }
+        .btn:disabled { background-color: var(--text-secondary); cursor: not-allowed; box-shadow: none; transform: none; opacity: 0.6;}
+        .btn:not(:disabled):hover { background-color: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 7px 15px rgba(56, 189, 248, 0.4); }
+        .btn:not(:disabled):active { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(56, 189, 248, 0.3); }
+
+         /* Responsive */
+        @media (max-width: 700px) {
+             body { padding-top: 100px; } /* Adjust if top bar wraps more */
+             .top-bar { padding: 10px 15px; }
+             .game-stats { gap: 10px 15px; font-size: 0.9rem; justify-content: flex-end;}
+        }
+        @media (max-width: 550px) {
+             .game-container { grid-template-columns: repeat(3, 80px); gap: 15px; padding: 20px;}
+             .hole { width: 80px; height: 80px; border-width: 4px; }
+             .controls { flex-direction: column; width: 80%; max-width: 250px;}
+             .btn { width: 100%; font-size: 0.95rem; padding: 10px 20px;}
+        }
+        @media (max-width: 400px) {
+            body { padding-top: 130px; } /* More space needed if stats wrap heavily */
+             .game-container { grid-template-columns: repeat(2, 100px); gap: 20px;} /* 2x3 grid */
+             .hole { width: 100px; height: 100px;}
+             .top-bar .title { font-size: 1.1rem; }
+             .game-stats { justify-content: center;}
+        }
+
     </style>
-
 </head>
 <body>
-
-    <div class="top-bar">Whack-a-Mole Game</div>
-
-    <p class="redeem-coins">Your Score: <span id="score">0</span></p>
-    <p class="redeem-coins">Redeem Coins: <span id="redeemCoins">0</span></p>
-    <p class="redeem-coins">Time: <span id="timer">30</span></p>
-
-    <div class="game-container">
-        <div class="hole" onclick="whackMole(0)"><div class="mole" id="mole0"></div></div>
-        <div class="hole" onclick="whackMole(1)"><div class="mole" id="mole1"></div></div>
-        <div class="hole" onclick="whackMole(2)"><div class="mole" id="mole2"></div></div>
-        <div class="hole" onclick="whackMole(3)"><div class="mole" id="mole3"></div></div>
-        <div class="hole" onclick="whackMole(4)"><div class="mole" id="mole4"></div></div>
-        <div class="hole" onclick="whackMole(5)"><div class="mole" id="mole5"></div></div>
+    <div class="top-bar">
+        <div class="title"><i class="fa-solid fa-hammer"></i> Whack-a-Mole</div>
+        <div class="game-stats">
+            <div><i class="fa-solid fa-star"></i> Score: <span id="score">0</span></div>
+            <div><i class="fa-solid fa-clock"></i> Time: <span id="timer">30</span></div>
+            <div><i class="fa-solid fa-coins"></i> Coins: <span id="redeemCoins">0</span></div>
+        </div>
     </div>
 
-    <button onclick="startGame()">Start Game</button>
-    <button onclick="redeemPoints()">Get Balance</button>
+    <div class="game-container">
+        </div>
+
+    <div class="controls">
+        <button id="startButton" class="btn"><i class="fa-solid fa-play"></i> Start Game</button>
+        <button id="redeemButton" class="btn" disabled><i class="fa-solid fa-award"></i> Redeem Score</button>
+    </div>
 
     <script>
+        const gameContainer = document.querySelector('.game-container');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const redeemCoinsDisplay = document.getElementById('redeemCoins');
+        const startButton = document.getElementById('startButton');
+        const redeemButton = document.getElementById('redeemButton');
+
+        const HOLE_COUNT = 6;
+        const GAME_TIME = 30; // seconds
+        const MOLE_INTERVAL_MIN = 550; // ms - slightly faster min
+        const MOLE_INTERVAL_MAX = 1100; // ms - slightly faster max
+
         let score = 0;
-        let activeMole = -1;
-        let gameInterval;
-        let timeLeft = 30;
+        let activeMoleElement = null;
+        let molePopTimeout; // Use timeout for popping logic
         let timerInterval;
+        let timeLeft = GAME_TIME;
+        let gameActive = false;
+        let moles = []; // Array to hold mole elements
 
+        // --- Game Setup ---
+        function createHoles() {
+            gameContainer.innerHTML = ''; // Clear previous holes
+            moles = [];
+            for (let i = 0; i < HOLE_COUNT; i++) {
+                const hole = document.createElement('div');
+                hole.classList.add('hole');
+
+                const mole = document.createElement('div');
+                mole.classList.add('mole');
+                hole.appendChild(mole);
+                moles.push(mole); // Store mole element reference
+
+                gameContainer.appendChild(hole);
+            }
+            // Use event delegation on the container
+            gameContainer.addEventListener('mousedown', handleWhack); // mousedown feels quicker
+            gameContainer.addEventListener('touchstart', handleWhack, { passive: true }); // Basic touch support
+        }
+
+        // --- Game Logic ---
         function startGame() {
+            if (gameActive) return; // Prevent starting multiple times
+
             score = 0;
-            timeLeft = 30;
-            document.getElementById("score").innerText = score;
-            document.getElementById("timer").innerText = timeLeft;
+            timeLeft = GAME_TIME;
+            scoreDisplay.innerText = score;
+            timerDisplay.innerText = timeLeft;
+            gameActive = true;
+            startButton.disabled = true;
+            redeemButton.disabled = true; // Disable redeem during game
+             clearTimeout(molePopTimeout); // Clear any previous pop timeout
+             clearInterval(timerInterval); // Clear previous timer
 
-            if (gameInterval) clearInterval(gameInterval);
-            if (timerInterval) clearInterval(timerInterval);
+            // Ensure all moles are hidden initially and not whacked
+             moles.forEach(mole => {
+                  mole.classList.remove('up', 'whacked');
+                  // Reset any inline styles potentially left over if needed
+                   mole.style.animation = '';
+             });
 
-            gameInterval = setInterval(() => {
-                if (activeMole !== -1) {
-                    document.getElementById(`mole${activeMole}`).style.display = "none";
-                }
-
-                activeMole = Math.floor(Math.random() * 6);
-                document.getElementById(`mole${activeMole}`).style.display = "block";
-            }, 1000);
-
+            // Start Timer
             timerInterval = setInterval(() => {
                 timeLeft--;
-                document.getElementById("timer").innerText = timeLeft;
-
+                timerDisplay.innerText = timeLeft;
                 if (timeLeft <= 0) {
-                    clearInterval(gameInterval);
-                    clearInterval(timerInterval);
-                    alert("Time's up!");
-                    redeemPoints();
+                    endGame();
                 }
             }, 1000);
+
+            // Start Mole Popping
+            popMole();
         }
 
-        function whackMole(index) {
-            if (index === activeMole) {
-                score++;
-                document.getElementById("score").innerText = score;
-                document.getElementById(`mole${index}`).style.display = "none";
-                activeMole = -1;
+        function popMole() {
+            if (!gameActive) return;
+
+            // Hide current mole if it exists and is up
+            if (activeMoleElement && activeMoleElement.classList.contains('up')) {
+                activeMoleElement.classList.remove('up');
             }
+
+            // Select a new random mole that isn't currently animating whacked
+            let availableMoles = moles.filter(m => !m.classList.contains('whacked'));
+            if (availableMoles.length === 0) availableMoles = moles; // Fallback if all whacked briefly
+
+             let randomIndex = Math.floor(Math.random() * availableMoles.length);
+             let moleToPop = availableMoles[randomIndex];
+
+            // Ensure whacked animation isn't interfering
+            moleToPop.classList.remove('whacked');
+            moleToPop.style.animation = ''; // Reset animation property
+
+            // Pop it up
+            moleToPop.classList.add('up');
+            activeMoleElement = moleToPop;
+
+            // Schedule next pop
+            const interval = Math.random() * (MOLE_INTERVAL_MAX - MOLE_INTERVAL_MIN) + MOLE_INTERVAL_MIN;
+            molePopTimeout = setTimeout(popMole, interval);
         }
 
-        function redeemPoints() {
-            let redeemCoins = Math.floor(score / 10);
-            if (redeemCoins > 0) {
-                let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
-                localStorage.setItem("redeemCoins", currentBalance + redeemCoins);
-                document.getElementById("redeemCoins").innerText = currentBalance + redeemCoins;
-                alert(`You earned ${redeemCoins} Redeem Coins!`);
-                score = 0;
-                document.getElementById("score").innerText = score;
+        function handleWhack(event) {
+            if (!gameActive) return;
+
+            // Check if the clicked element is an active mole
+            const targetMole = event.target.closest('.mole');
+
+             // Ensure we clicked the mole itself and it's the currently active one and it's up
+            if (targetMole && targetMole === activeMoleElement && targetMole.classList.contains('up')) {
+
+                 // Score point
+                 score++;
+                 scoreDisplay.innerText = score;
+
+                 // Whacked Animation & Logic
+                 targetMole.classList.remove('up'); // Immediately prevent re-whack
+                 targetMole.classList.add('whacked');
+                 activeMoleElement = null; // Mole is gone
+
+                 // Remove 'whacked' class after animation completes to allow it to pop again
+                 targetMole.addEventListener('animationend', () => {
+                     targetMole.classList.remove('whacked');
+                     targetMole.style.animation = ''; // Clean up animation property
+                 }, { once: true });
+
+                 // Don't immediately pop another mole, let the popMole timeout handle it naturally
             }
+             // Optional: else { add miss effect/sound? }
         }
 
-        window.onload = function () {
-            document.getElementById("redeemCoins").innerText = localStorage.getItem("redeemCoins") || 0;
-        };
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            clearTimeout(molePopTimeout);
+            startButton.disabled = false;
+
+             // Hide any active mole
+             if (activeMoleElement && activeMoleElement.classList.contains('up')) {
+                activeMoleElement.classList.remove('up');
+             }
+             activeMoleElement = null;
+
+             // Enable redeem button only if score > 0
+             if (score > 0) {
+                  redeemButton.disabled = false;
+             }
+
+            alert(`Time's up! Your final score: ${score}`);
+            // Note: Points are NOT automatically redeemed here anymore. User must click button.
+        }
+
+
+        function redeemScore() {
+             // Calculate redeemable coins (ensure score >= 10 for at least 1 coin)
+            let pointsToRedeem = score; // Redeem based on current score shown
+             let earnedCoins = Math.floor(pointsToRedeem / 10); // Example: 1 coin per 10 points
+
+             if (earnedCoins > 0) {
+                 let currentBalance = parseInt(localStorage.getItem("redeemCoins") || 0);
+                 let newBalance = currentBalance + earnedCoins;
+                 localStorage.setItem("redeemCoins", newBalance);
+                 redeemCoinsDisplay.innerText = newBalance.toLocaleString(); // Update display
+
+                 alert(`Score of ${pointsToRedeem} redeemed for ${earnedCoins} Coins!`);
+
+                 // Reset score AFTER redeeming
+                 score = 0;
+                 scoreDisplay.innerText = score;
+                 redeemButton.disabled = true; // Disable button after redeeming
+             } else {
+                 alert("You need at least 10 points to redeem coins!");
+             }
+        }
+
+        // --- Initialization ---
+        function initializeGame() {
+            createHoles();
+            redeemCoinsDisplay.innerText = (localStorage.getItem("redeemCoins") || 0).toLocaleString();
+            startButton.addEventListener('click', startGame);
+            redeemButton.addEventListener('click', redeemScore);
+        }
+
+        window.onload = initializeGame;
+
     </script>
     <script type='text/javascript' src='//pl26097894.effectiveratecpm.com/8c/e4/db/8ce4dbb327657a662d6ad04afdeaa225.js'></script>
 </body>
