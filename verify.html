@@ -1,205 +1,201 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Task Verification</title>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-      <style>
-          /* Styles from the 'hybrid model' example */
-          body {
-              font-family: 'Poppins', Arial, sans-serif; text-align: center;
-              background: linear-gradient(to bottom right, #1e1e1e, #121212); color: #e0e0e0;
-              padding: 50px 20px;
-              margin: 0; /* Added margin: 0 */
-              display: flex; /* Added flex properties for centering */
-              justify-content: center;
-              align-items: center;
-              min-height: 100vh;
-          }
-           /* Centering container */
-           .container {
-              max-width: 500px; /* Or adjust width as needed */
-              width: 100%;
-          }
-          .message {
-              padding: 20px;
-              margin-top: 20px; /* Added margin-top */
-              background-color: rgba(0,0,0,0.3);
-              border-radius: 8px;
-              display: inline-block;
-              min-width: 300px; /* Ensure some width */
-              font-weight: 600;
-          }
-          .success { color: #5cb85c; border: 1px solid #5cb85c; }
-          .error { color: #d9534f; border: 1px solid #d9534f; }
-          .warning { color: #f0ad4e; border: 1px solid #f0ad4e; } /* Style for already completed */
-          a { color: #f0c419; text-decoration: none; margin-top: 20px; display: inline-block;}
-          a:hover { text-decoration: underline; }
-          h1 { color: #ffffff; font-weight: 700; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles from the 'old style' example */
+        body {
+            font-family: 'Poppins', Arial, sans-serif; text-align: center;
+            background: linear-gradient(to bottom right, #1e1e1e, #121212); color: #e0e0e0;
+            padding: 50px 20px;
+            margin: 0; /* Added margin: 0 */
+            display: flex; /* Added flex properties for centering */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+         /* Centering container */
+         .container {
+            max-width: 500px; /* Or adjust width as needed */
+            width: 100%;
+        }
+        .message {
+            padding: 20px;
+            margin-top: 20px; /* Added margin-top */
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 300px; /* Ensure some width */
+            font-weight: 600;
+            line-height: 1.6; /* Added for better readability */
+        }
+        .success { color: #5cb85c; border: 1px solid #5cb85c; }
+        .error { color: #d9534f; border: 1px solid #d9534f; }
+        .warning { color: #f0ad4e; border: 1px solid #f0ad4e; } /* Style for already completed */
+        a { color: #f0c419; text-decoration: none; margin-top: 20px; display: inline-block;}
+        a:hover { text-decoration: underline; }
+        h1 { color: #ffffff; font-weight: 700; }
 
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <h1>Task Verification</h1>
-          <div id="verificationMessage" class="message">Verifying task completion...</div>
-          <p><a href="tasks.html">Return to Task Page</a></p>
-      </div>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Verification</h1>
+        <div id="verificationMessage" class="message">Verifying task completion...</div>
+        <p><a href="tasks.html">Return to Task Page</a></p>
+    </div>
 
-      <script>
-          // --- Configuration (MUST MATCH tasks.html) ---
-          const dailyUrls = [
-              "https://cuty.io/kuG4wBd", "https://cuty.io/AelmNWIA", "https://cuty.io/ftvDlEfLv",
-              "https://cuty.io/Uwr2", "https://cuty.io/ifJQmnG7oy", "https://cuty.io/O55cHru",
-              "https://cuty.io/W1DucInva", "https://cuty.io/YSxU7GA", "https://cuty.io/LGHkH",
-              "https://cuty.io/KD7XeccRb"
-          ];
-          const startDateForRotation = new Date("2025-04-07"); // !! Must match tasks.html !!
-          const totalTasks = dailyUrls.length;
-          const completedLinksKey = "completedTaskIndices";
-          const streakKey = "streakCounter";
-          const lastDateKey = "lastTaskDate";
-          // --- End Configuration ---
+    <script>
+        // --- Configuration (MUST MATCH tasks.html) ---
+        const dailyUrls = [
+            "https://cuty.io/kuG4wBd", "https://cuty.io/AelmNWIA", "https://cuty.io/ftvDlEfLv",
+            "https://cuty.io/Uwr2", "https://cuty.io/ifJQmnG7oy", "https://cuty.io/O55cHru",
+            "https://cuty.io/W1DucInva", "https://cuty.io/YSxU7GA", "https://cuty.io/LGHkH",
+            "https://cuty.io/KD7XeccRb"
+        ];
+        // !! IMPORTANT: Use the same start date as your tasks.html !!
+        const startDateForRotation = new Date("2025-04-08"); // Must match tasks.html
+        const totalTasks = dailyUrls.length;
+        const completedLinksKey = "completedTaskIndices";
+        const streakKey = "streakCounter"; // Now represents total days completed
+        const lastDateKey = "lastTaskDate"; // Tracks last day *any* task was done
+        // --- End Configuration ---
 
-          // Helper to format Date object to YYYY-MM-DD
-           function formatDateYYYYMMDD(date) {
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
-              return `${year}-${month}-${day}`;
-          }
-          // Gets today's date as YYYY-MM-DD
-          function getCurrentDateYYYYMMDD() {
-               return formatDateYYYYMMDD(new Date());
-          }
-          // Calculates the index (0-9) for today's link
-           function getTodaysLinkIndex() {
-              const today = new Date();
-              const startDay = new Date(startDateForRotation.getFullYear(), startDateForRotation.getMonth(), startDateForRotation.getDate());
-              const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-              const timeDifference = todayDay.getTime() - startDay.getTime();
-              let dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-              if (dayDifference < 0) dayDifference = 0;
-              if (totalTasks === 0) return -1;
-              return dayDifference % totalTasks;
-          }
+        // Helper to format Date object to YYYY-MM-DD
+         function formatDateYYYYMMDD(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        // Gets today's date as YYYY-MM-DD
+        function getCurrentDateYYYYMMDD() {
+             return formatDateYYYYMMDD(new Date());
+        }
+        // Calculates the index (0-9) for today's link
+         function getTodaysLinkIndex() {
+            const today = new Date();
+            const startDay = new Date(startDateForRotation.getFullYear(), startDateForRotation.getMonth(), startDateForRotation.getDate());
+            const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const timeDifference = todayDay.getTime() - startDay.getTime();
+            let dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            if (dayDifference < 0) dayDifference = 0;
+            if (totalTasks === 0) return -1;
+            return dayDifference % totalTasks;
+        }
 
-          // Daily streak logic (returns true if streak was awarded *now*)
-          function increaseStreak() {
-              let lastCompleted = localStorage.getItem(lastDateKey);
-              let streak = parseInt(localStorage.getItem(streakKey)) || 0;
-              let today = getCurrentDateYYYYMMDD(); // Use consistent date format
+        // *** MODIFIED streak logic: Never resets, increments total days ***
+        function increaseStreak() {
+            let lastCompleted = localStorage.getItem(lastDateKey);
+            let streak = parseInt(localStorage.getItem(streakKey)) || 0; // Get current count
+            let today = getCurrentDateYYYYMMDD(); // Use consistent date format
 
-              if (lastCompleted === today) {
-                  console.log("Streak not increased: Already awarded today.");
-                  return false; // Already done today
-              }
+            // Check 1: If already completed today, do nothing, return false
+            if (lastCompleted === today) {
+                console.log("Total days count not increased: Already recorded today.");
+                return false; // Already counted today
+            }
 
-              let newStreak = 1;
-              if (lastCompleted) {
-                  let lastDate = new Date(lastCompleted); // Parse stored date
-                  lastDate.setDate(lastDate.getDate() + 1); // Increment day
-                  let expectedToday = formatDateYYYYMMDD(lastDate); // Format correctly
+            // Check 2: If it's a new day (lastCompleted is not today)
+            // Increment the existing count by 1.
+            let newStreak = streak + 1;
+            console.log("Total days count increased. Previous:", streak, "New:", newStreak);
 
-                  if (expectedToday === today) {
-                      newStreak = streak + 1; // Continue
-                      console.log("Streak increased: Consecutive day.");
-                  } else {
-                      newStreak = 1; // Reset
-                      console.log("Streak reset: Not consecutive day.");
-                  }
-              } else {
-                  newStreak = 1; // First time
-                  console.log("Streak started: First task completion.");
-              }
+            // Save the new count and update the last completion date to today
+            localStorage.setItem(lastDateKey, today);
+            localStorage.setItem(streakKey, newStreak); // Save the incremented count
+            console.log("Total days count updated in localStorage:", newStreak, "Date:", today);
+            return true; // A point was awarded for today (contributing to total)
+        }
+        // *** End of MODIFIED streak logic ***
 
-              localStorage.setItem(lastDateKey, today);
-              localStorage.setItem(streakKey, newStreak);
-              console.log("Streak updated in localStorage:", newStreak, "Date:", today);
-              return true; // Streak point was awarded now
-          }
+        // --- Core verification logic ---
+        function verifyAndRecordCompletion() {
+            const messageElement = document.getElementById("verificationMessage");
+            let messageText = "";
+            let messageClass = "message error"; // Default class
 
-          // --- Core verification logic ---
-          function verifyAndRecordCompletion() {
-              const messageElement = document.getElementById("verificationMessage");
-              let messageText = "";
-              let messageClass = "message error"; // Default class
+             // Simulate verification delay
+            setTimeout(() => {
+                // ======================================================
+                // === CRITICAL STEP: Implement actual verification ===
+                // How do you know the task was completed? Check URL parameters?
+                // Example: Check if URL contains "?verified=true"
+                // const urlParams = new URLSearchParams(window.location.search);
+                // const taskWasSuccessfullyCompleted = urlParams.has("verified");
+                // Replace this placeholder with your real check:
+                const taskWasSuccessfullyCompleted = true; // <-- Replace this line!
+                // ======================================================
 
-               // Simulate verification delay
-              setTimeout(() => {
-                  // ======================================================
-                  // === CRITICAL STEP: Implement actual verification ===
-                  // ======================================================
-                  const taskWasSuccessfullyCompleted = true; // <-- Replace this line!
-                  // ======================================================
+                if (taskWasSuccessfullyCompleted) {
+                    console.log("Verification check passed.");
+                    messageClass = "message success"; // Assume success
 
-                  if (taskWasSuccessfullyCompleted) {
-                      console.log("Verification check passed.");
-                      messageClass = "message success"; // Assume success
+                    const todaysIndex = getTodaysLinkIndex();
+                    if (todaysIndex === -1) {
+                        messageText = "Error: Could not determine today's task link.";
+                        messageClass = "message error";
+                        console.error("Failed to get today's link index.");
+                    } else {
+                        // --- 1. Handle Unique Link Completion ---
+                        let completedIndices = {};
+                        let linkWasAlreadyCompleted = false;
+                        try {
+                            completedIndices = JSON.parse(localStorage.getItem(completedLinksKey) || "{}");
+                        } catch (e) { console.error("Error parsing completed tasks", e); completedIndices = {}; }
 
-                      const todaysIndex = getTodaysLinkIndex();
-                      if (todaysIndex === -1) {
-                          messageText = "Error: Could not determine today's task link.";
-                          messageClass = "message error";
-                          console.error("Failed to get today's link index.");
-                      } else {
-                          // --- 1. Handle Unique Link Completion ---
-                          let completedIndices = {};
-                          let linkWasAlreadyCompleted = false;
-                          try {
-                              completedIndices = JSON.parse(localStorage.getItem(completedLinksKey) || "{}");
-                          } catch (e) { console.error("Error parsing completed tasks", e); completedIndices = {}; }
+                        if (completedIndices[todaysIndex] === true) {
+                            linkWasAlreadyCompleted = true;
+                            messageText = "This specific task link was already completed. ";
+                            messageClass = "message warning"; // Use warning style
+                            console.log("Task index", todaysIndex, "already marked complete.");
+                        } else {
+                            completedIndices[todaysIndex] = true;
+                            localStorage.setItem(completedLinksKey, JSON.stringify(completedIndices));
+                            const completedCount = Object.values(completedIndices).filter(status => status === true).length;
+                            messageText = "Task link completed successfully! (" + completedCount + "/" + totalTasks + " unique tasks done). ";
+                            console.log("Saved completion for index", todaysIndex);
+                        }
 
-                          if (completedIndices[todaysIndex] === true) {
-                              linkWasAlreadyCompleted = true;
-                              messageText = "This specific task link was already completed. ";
-                              messageClass = "message warning"; // Use warning style
-                              console.log("Task index", todaysIndex, "already marked complete.");
-                          } else {
-                              completedIndices[todaysIndex] = true;
-                              localStorage.setItem(completedLinksKey, JSON.stringify(completedIndices));
-                              const completedCount = Object.values(completedIndices).filter(status => status === true).length;
-                              messageText = "Task link completed successfully! (" + completedCount + "/" + totalTasks + " unique tasks done). ";
-                              console.log("Saved completion for index", todaysIndex);
-                          }
+                        // --- 2. Handle Total Days Count (Streak) - Only if link wasn't already completed ---
+                        // We only count today towards the total if the link completion itself was successful *now*
+                        if (!linkWasAlreadyCompleted) {
+                             const didTotalDaysIncrease = increaseStreak(); // Attempt total days increase
+                             if (didTotalDaysIncrease) {
+                                 const currentTotalDays = localStorage.getItem(streakKey); // Get updated count
+                                 messageText += "Total engagement days increased! (Now: " + currentTotalDays + ").";
+                             } else {
+                                 const currentTotalDays = localStorage.getItem(streakKey) || 0;
+                                 messageText += "Total engagement days already counted for today (Total: " + currentTotalDays + ").";
+                             }
+                        } else {
+                             // If link was already done, just mention the current total days count
+                             const currentTotalDays = localStorage.getItem(streakKey) || 0;
+                             messageText += "(Total engagement days: " + currentTotalDays + ").";
+                        }
+                    }
+                } else {
+                    // Handle task verification failure
+                    messageText = "Task verification failed. Please ensure you completed the task correctly.";
+                    messageClass = 'message error';
+                    console.error("Task verification check failed.");
+                }
 
-                          // --- 2. Handle Daily Streak (Only if link wasn't already completed) ---
-                          // We only award daily streak point if the link completion itself was successful *now*
-                          if (!linkWasAlreadyCompleted) {
-                               const didStreakIncrease = increaseStreak(); // Attempt streak increase
-                               if (didStreakIncrease) {
-                                   const currentStreak = localStorage.getItem(streakKey); // Get updated streak
-                                   messageText += "Daily streak point awarded! (Streak: " + currentStreak + ").";
-                               } else {
-                                   const currentStreak = localStorage.getItem(streakKey) || 0; // Get potentially old streak
-                                   messageText += "Daily streak point already awarded today (Streak: " + currentStreak + ").";
-                               }
-                          } else {
-                               // If link was already done, just mention the current streak
-                               const currentStreak = localStorage.getItem(streakKey) || 0;
-                               messageText += "(Current Daily Streak: " + currentStreak + ").";
-                          }
-                      }
-                  } else {
-                      // Handle task verification failure
-                      messageText = "Task verification failed. Please ensure you completed the task correctly.";
-                      messageClass = 'message error';
-                      console.error("Task verification check failed.");
-                  }
+                // Update the message display
+                messageElement.textContent = messageText;
+                messageElement.className = messageClass; // Apply the determined class
 
-                  // Update the message display
-                  messageElement.textContent = messageText;
-                  messageElement.className = messageClass; // Apply the determined class
+            }, 1500); // Simulate verification delay (adjust as needed)
+        }
 
-              }, 1500); // Simulate verification delay (adjust as needed)
-          }
+        // Run the verification logic when the page loads
+        window.onload = verifyAndRecordCompletion;
+    </script>
 
-          // Run the verification logic when the page loads
-          window.onload = verifyAndRecordCompletion;
-      </script>
-
-  </body>
-  </html>
+</body>
+</html>
