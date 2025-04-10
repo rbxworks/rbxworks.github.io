@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Styles from the 'hybrid model' example */
+        /* Styles from the 'old style' example */
         body {
             font-family: 'Poppins', Arial, sans-serif; text-align: center;
             background: linear-gradient(to bottom right, #1e1e1e, #121212); color: #e0e0e0;
@@ -32,6 +32,7 @@
             display: inline-block;
             min-width: 300px; /* Ensure some width */
             font-weight: 600;
+            line-height: 1.6; /* Added for better readability */
         }
         .success { color: #5cb85c; border: 1px solid #5cb85c; }
         .error { color: #d9534f; border: 1px solid #d9534f; }
@@ -57,11 +58,12 @@
             "https://cuty.io/W1DucInva", "https://cuty.io/YSxU7GA", "https://cuty.io/LGHkH",
             "https://cuty.io/KD7XeccRb"
         ];
-        const startDateForRotation = new Date("2025-04-07"); // !! Must match tasks.html !!
+        // !! IMPORTANT: Use the same start date as your tasks.html !!
+        const startDateForRotation = new Date("2025-04-08"); // Must match tasks.html
         const totalTasks = dailyUrls.length;
         const completedLinksKey = "completedTaskIndices";
-        const streakKey = "streakCounter";
-        const lastDateKey = "lastTaskDate";
+        const streakKey = "streakCounter"; // Now represents total days completed
+        const lastDateKey = "lastTaskDate"; // Tracks last day *any* task was done
         // --- End Configuration ---
 
         // Helper to format Date object to YYYY-MM-DD
@@ -87,40 +89,30 @@
             return dayDifference % totalTasks;
         }
 
-        // Daily streak logic (returns true if streak was awarded *now*)
+        // *** MODIFIED streak logic: Never resets, increments total days ***
         function increaseStreak() {
             let lastCompleted = localStorage.getItem(lastDateKey);
-            let streak = parseInt(localStorage.getItem(streakKey)) || 0;
+            let streak = parseInt(localStorage.getItem(streakKey)) || 0; // Get current count
             let today = getCurrentDateYYYYMMDD(); // Use consistent date format
 
+            // Check 1: If already completed today, do nothing, return false
             if (lastCompleted === today) {
-                console.log("Streak not increased: Already awarded today.");
-                return false; // Already done today
+                console.log("Total days count not increased: Already recorded today.");
+                return false; // Already counted today
             }
 
-            let newStreak = 1;
-            if (lastCompleted) {
-                let lastDate = new Date(lastCompleted); // Parse stored date
-                lastDate.setDate(lastDate.getDate() + 1); // Increment day
-                let expectedToday = formatDateYYYYMMDD(lastDate); // Format correctly
+            // Check 2: If it's a new day (lastCompleted is not today)
+            // Increment the existing count by 1.
+            let newStreak = streak + 1;
+            console.log("Total days count increased. Previous:", streak, "New:", newStreak);
 
-                if (expectedToday === today) {
-                    newStreak = streak + 1; // Continue
-                    console.log("Streak increased: Consecutive day.");
-                } else {
-                    newStreak = 1; // Reset
-                    console.log("Streak reset: Not consecutive day.");
-                }
-            } else {
-                newStreak = 1; // First time
-                console.log("Streak started: First task completion.");
-            }
-
+            // Save the new count and update the last completion date to today
             localStorage.setItem(lastDateKey, today);
-            localStorage.setItem(streakKey, newStreak);
-            console.log("Streak updated in localStorage:", newStreak, "Date:", today);
-            return true; // Streak point was awarded now
+            localStorage.setItem(streakKey, newStreak); // Save the incremented count
+            console.log("Total days count updated in localStorage:", newStreak, "Date:", today);
+            return true; // A point was awarded for today (contributing to total)
         }
+        // *** End of MODIFIED streak logic ***
 
         // --- Core verification logic ---
         function verifyAndRecordCompletion() {
@@ -132,7 +124,11 @@
             setTimeout(() => {
                 // ======================================================
                 // === CRITICAL STEP: Implement actual verification ===
-                // ======================================================
+                // How do you know the task was completed? Check URL parameters?
+                // Example: Check if URL contains "?verified=true"
+                // const urlParams = new URLSearchParams(window.location.search);
+                // const taskWasSuccessfullyCompleted = urlParams.has("verified");
+                // Replace this placeholder with your real check:
                 const taskWasSuccessfullyCompleted = true; // <-- Replace this line!
                 // ======================================================
 
@@ -166,21 +162,21 @@
                             console.log("Saved completion for index", todaysIndex);
                         }
 
-                        // --- 2. Handle Daily Streak (Only if link wasn't already completed) ---
-                        // We only award daily streak point if the link completion itself was successful *now*
+                        // --- 2. Handle Total Days Count (Streak) - Only if link wasn't already completed ---
+                        // We only count today towards the total if the link completion itself was successful *now*
                         if (!linkWasAlreadyCompleted) {
-                             const didStreakIncrease = increaseStreak(); // Attempt streak increase
-                             if (didStreakIncrease) {
-                                 const currentStreak = localStorage.getItem(streakKey); // Get updated streak
-                                 messageText += "Daily streak point awarded! (Streak: " + currentStreak + ").";
+                             const didTotalDaysIncrease = increaseStreak(); // Attempt total days increase
+                             if (didTotalDaysIncrease) {
+                                 const currentTotalDays = localStorage.getItem(streakKey); // Get updated count
+                                 messageText += "Total engagement days increased! (Now: " + currentTotalDays + ").";
                              } else {
-                                 const currentStreak = localStorage.getItem(streakKey) || 0; // Get potentially old streak
-                                 messageText += "Daily streak point already awarded today (Streak: " + currentStreak + ").";
+                                 const currentTotalDays = localStorage.getItem(streakKey) || 0;
+                                 messageText += "Total engagement days already counted for today (Total: " + currentTotalDays + ").";
                              }
                         } else {
-                             // If link was already done, just mention the current streak
-                             const currentStreak = localStorage.getItem(streakKey) || 0;
-                             messageText += "(Current Daily Streak: " + currentStreak + ").";
+                             // If link was already done, just mention the current total days count
+                             const currentTotalDays = localStorage.getItem(streakKey) || 0;
+                             messageText += "(Total engagement days: " + currentTotalDays + ").";
                         }
                     }
                 } else {
