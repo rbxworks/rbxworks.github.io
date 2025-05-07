@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page with Gleam and Buttons</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Basic CSS Variables (if not already defined globally on your page) */
+        :root {
+            --bg-gradient-start: #1f2937;
+            --bg-gradient-end: #111827;
+            --card-bg: rgba(31, 41, 55, 0.75);
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --secondary-color: #4b5563; /* For secondary buttons */
+            --secondary-hover: #6b7280;
+            --discord-color: #5865F2; /* Discord Blurple */
+            --discord-hover: #4752c4; /* Darker Discord Blurple */
+            --text-primary: #f3f4f6;
+            --text-button-dark-bg: #0f172a; /* Text color for light buttons */
+            --border-radius-small: 8px;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Styles for the new buttons container */
+        .extra-buttons-container {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically by default */
+            align-items: center; /* Center buttons */
+            gap: 15px; /* Space between buttons */
+            margin-top: 30px; /* Space below the Gleam widget */
+            width: 100%;
+            max-width: 350px; /* Max width for the buttons block */
+        }
+
+        /* Base button style (ensure this matches your site's .btn or adapt) */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between icon and text */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            text-decoration: none; /* For <a> tags styled as buttons */
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            width: 100%; /* Make buttons take full width of their container */
+            text-align: center;
+        }
+
+        .btn i { /* Icon styling */
+            font-size: 1.1em; /* Slightly larger icon */
+        }
+
+        /* Secondary Button Style (Back to Home) */
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            background-color: var(--secondary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        /* Discord Button Style */
+        .btn-discord {
+            background-color: var(--discord-color);
+            color: white; /* Discord buttons typically have white text */
+        }
+        .btn-discord:hover {
+            background-color: var(--discord-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        /* Gleam widget styling (optional: if you need to adjust its container) */
+        .gleam-widget-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            /* Add any specific styling for the Gleam widget container if needed */
+        }
+
+        /* Responsive adjustments for buttons if needed */
+        @media (min-width: 600px) {
+            .extra-buttons-container {
+                flex-direction: row; /* Buttons side-by-side on larger screens */
+                justify-content: center;
+                max-width: none; /* Allow container to be wider */
+            }
+            .btn {
+                width: auto; /* Allow buttons to size based on content on larger screens */
+                min-width: 200px; /* Ensure a decent minimum width */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="gleam-widget-container">
+        <a class="e-widget no-button" href="https://gleam.io/njEXi/500-robux" rel="nofollow">
+            500 robux </a>
+        <script type="text/javascript" src="https://widget.gleamjs.io/e.js" async="true"></script>
+    </div>
+
+    <div class="extra-buttons-container">
+        <a href="index.html" class="btn btn-secondary">
+            <i class="fa-solid fa-house"></i> Back to Home
+        </a>
+        <a href="https://discord.gg/Wamhr2kFX4" class="btn btn-discord" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-discord"></i> Join our Discord
+        </a>
+    </div>
+
+</body>
+</html>
