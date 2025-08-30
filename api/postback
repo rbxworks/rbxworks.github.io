@@ -1,0 +1,88 @@
+// This special function is what Vercel will run every time someone visits your URL.
+export default function handler(request, response) {
+  
+  // This part gets the data that RevTango sends in the URL, 
+  // like the click_id and how much you earned (payout).
+  const { click_id, payout, txid, status } = request.query;
+
+  // --- This is for testing! ---
+  // We'll still log the information to the Vercel console for debugging.
+  console.log('--- ✅ NEW CONVERSION RECEIVED! ---');
+  console.log('Click ID:', click_id);
+  console.log('Payout:', payout);
+  console.log('Transaction ID (txid):', txid);
+  console.log('Status:', status);
+  console.log('------------------------------------');
+
+  // --- NEW: Generate an HTML page to display the data ---
+  const htmlPage = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Postback Received</title>
+      <style>
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+          background-color: #f0f2f5; 
+          color: #1c1e21; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          height: 100vh; 
+          margin: 0;
+        }
+        .container { 
+          background-color: #ffffff; 
+          padding: 2rem 3rem; 
+          border-radius: 12px; 
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+          max-width: 600px;
+          width: 90%;
+          border: 1px solid #dddfe2;
+        }
+        h1 { 
+          color: #28a745; 
+          border-bottom: 2px solid #e7eaf3; 
+          padding-bottom: 0.5rem; 
+          margin-top: 0;
+        }
+        ul { 
+          list-style-type: none; 
+          padding: 0; 
+        }
+        li { 
+          background-color: #f7f7f7;
+          border-left: 4px solid #007bff;
+          padding: 12px 15px; 
+          margin-bottom: 10px; 
+          border-radius: 4px;
+        }
+        strong { 
+          color: #495057; 
+          margin-right: 8px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>✅ Conversion Received!</h1>
+        <ul>
+          <li><strong>Click ID:</strong> ${click_id || 'Not provided'}</li>
+          <li><strong>Payout:</strong> ${payout || 'Not provided'}</li>
+          <li><strong>Transaction ID:</strong> ${txid || 'Not provided'}</li>
+          <li><strong>Status:</strong> ${status || 'Not provided'}</li>
+        </ul>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // --- MODIFIED: Send the HTML page instead of just "OK" ---
+  // We set the header to tell the browser that we are sending HTML content.
+  response.setHeader('Content-Type', 'text/html');
+  // We send our newly created page as the response.
+  response.status(200).send(htmlPage);
+}
+
