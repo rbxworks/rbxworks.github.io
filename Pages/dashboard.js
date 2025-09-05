@@ -1,16 +1,16 @@
-// pages/dashboard.js (Example for Next.js Pages Router)
+// pages/dashboard.js
 import { kv } from '@vercel/kv';
+import styles from '../styles/Dashboard.module.css'; // Optional: for styling
 
-// This function runs on the server before the page is sent to the browser.
+// This function runs on the server before the page loads
 export async function getServerSideProps() {
-  // 1. Get all keys that start with "conversion:"
-  const keys = await kv.keys('conversion:*');
+  // 1. Get all keys that start with "data:"
+  const keys = await kv.keys('data:*');
   
-  // 2. Fetch all the data for those keys
-  // If there are no keys, mget returns null, so we default to an empty array
+  // 2. If there are keys, fetch the data for all of them
   const conversions = keys.length ? await kv.mget(...keys) : [];
 
-  // 3. Send the data to the page component as a "prop"
+  // 3. Send the data to the page
   return {
     props: {
       conversions,
@@ -18,36 +18,23 @@ export async function getServerSideProps() {
   };
 }
 
-// This is the React component that renders your page.
+// This is the component that renders your page
 export default function Dashboard({ conversions }) {
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
-      <h1>Conversion Dashboard 📊</h1>
+    <div className={styles.container}>
+      <h1>🚀 Live Data from Vercel KV</h1>
       {conversions.length === 0 ? (
-        <p>No conversions received yet.</p>
+        <p>No data has been saved yet.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f0f0f0' }}>
-              <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Transaction ID</th>
-              <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Click ID</th>
-              <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Payout</th>
-              <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Status</th>
-              <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Received At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {conversions.map((conv, index) => (
-              <tr key={index}>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{conv.txid || 'N/A'}</td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{conv.click_id}</td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{conv.payout}</td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{conv.status}</td>
-                <td style={{ padding: '8px', border: '1px solid #ddd' }}>{new Date(conv.receivedAt).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ul className={styles.list}>
+          {conversions.map((conv, index) => (
+            <li key={index} className={styles.listItem}>
+              <strong>User:</strong> {conv.user || 'N/A'} <br />
+              <strong>Value:</strong> {conv.value || 'N/A'} <br />
+              <strong>Received:</strong> {new Date(conv.receivedAt).toLocaleString()}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
