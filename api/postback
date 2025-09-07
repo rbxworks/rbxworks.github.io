@@ -1,28 +1,41 @@
-// pages/api/save-data.js
+// --- ⬇️ 1. PASTE YOUR GOOGLE APPS SCRIPT URL HERE! ⬇️ ---
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_UNIQUE_URL_HERE/exec";
 
+// This function is "async" to allow it to wait for the fetch call.
 export default async function handler(request, response) {
-  // Get the data to save from the request URL (e.g., /api/save-data?user=jane&payout=10)
-  const dataToSave = request.query;
+  
+  // Get data from the affiliate network's request.
+  const { click_id, payout, txid, status } = request.query;
 
-  // Use the secret URL from your Vercel environment variables
-  const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
-
+  // Log the data in Vercel for debugging.
+  console.log('--- ✅ NEW CONVERSION RECEIVED! ---');
+  console.log('Forwarding data to Google Sheets...');
+  
+  // --- 2. FORWARD THE DATA TO GOOGLE APPS SCRIPT ---
   try {
-    // Forward the data to your Google Apps Script using a POST request
-    const scriptResponse = await fetch(APPS_SCRIPT_URL, {
+    const payload = { click_id, payout, txid, status };
+    
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(dataToSave),
+      body: JSON.stringify(payload),
     });
 
-    const result = await scriptResponse.json();
-    
-    // Send the result from Google back to the original caller
-    response.status(200).json(result);
+    // Check if the request to Google was successful
+    if (!res.ok) {
+        console.error("Error sending data to Google Script:", await res.text());
+    } else {
+        console.log("Data successfully sent to Google Sheets.");
+    }
 
   } catch (error) {
-    response.status(500).json({ status: 'error', message: 'Failed to forward data.' });
+    console.error("Failed to send data to Google Script:", error);
   }
+
+  // --- 3. SEND A SIMPLE 'OK' RESPONSE ---
+  // This is for the affiliate network's server. It confirms receipt of the data.
+  response.status(200).send('OK');
 }
+
