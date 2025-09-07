@@ -1,5 +1,5 @@
 // --- ⬇️ 1. PASTE YOUR GOOGLE APPS SCRIPT URL HERE! ⬇️ ---
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_UNIQUE_URL_HERE/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoGE8x9rUvFljzvgliYaX-lwWPpraaDbm2B2AIxMsLyWwZAXM-MYazEDoyZdfXs6PLBg/exec";
 
 // This function is "async" to allow it to wait for the fetch call.
 export default async function handler(request, response) {
