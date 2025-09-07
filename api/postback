@@ -1,0 +1,28 @@
+// pages/api/save-data.js
+
+export default async function handler(request, response) {
+  // Get the data to save from the request URL (e.g., /api/save-data?user=jane&payout=10)
+  const dataToSave = request.query;
+
+  // Use the secret URL from your Vercel environment variables
+  const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
+
+  try {
+    // Forward the data to your Google Apps Script using a POST request
+    const scriptResponse = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSave),
+    });
+
+    const result = await scriptResponse.json();
+    
+    // Send the result from Google back to the original caller
+    response.status(200).json(result);
+
+  } catch (error) {
+    response.status(500).json({ status: 'error', message: 'Failed to forward data.' });
+  }
+}
