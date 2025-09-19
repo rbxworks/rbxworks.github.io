@@ -4,8 +4,15 @@
 const GITHUB_API = 'https://api.github.com';
 
 export default async function handler(req, res) {
+  // Accept GET or POST from Revtooo (many networks use GET)
   const params = req.method === 'GET' ? req.query : req.body;
-  const { secret, user_id, amount, status } = params;
+  const {
+    secret,       // required to validate the request
+    user_id,
+    amount,
+    transaction_id,
+    status
+  } = params;
 
   const {
     GITHUB_TOKEN,
@@ -16,54 +23,82 @@ export default async function handler(req, res) {
     POSTBACK_SECRET
   } = process.env;
 
+  // --- Validation ---
   if (secret !== POSTBACK_SECRET) return res.status(403).send('Forbidden');
-  if (!user_id || !amount || status !== '1') return res.status(400).send('Bad Request');
+  if (!user_id || !transaction_id || status !== '1') return res.status(400).send('Bad Request: Missing user_id, transaction_id, or status is not "1"');
 
   try {
-    // 1) Fetch current file from GitHub
+    // --- 1) GET the current rewards file from GitHub ---
     const getUrl = `${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
     let getResp = await fetch(getUrl, {
-      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'User-Agent': 'revtooo-postback' }
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'User-Agent': 'revtooo-postback-balance-manager' }
     });
 
     let sha = null;
-    let balances = {};
+    let userData = {}; // Change: The file will now store an object, not an array.
 
     if (getResp.status === 200) {
       const payload = await getResp.json();
       sha = payload.sha;
+      // Change: Decode file content, defaulting to an empty JSON object '{}' if file is empty.
       const content = payload.content ? Buffer.from(payload.content, 'base64').toString() : '{}';
-      try { balances = JSON.parse(content); } catch (e) { balances = {}; }
-    } else if (getResp.status === 404) {
-      balances = {};
-      sha = null;
-    } else {
-      const t = await getResp.text();
-      console.error('GitHub GET error', t);
+      try {
+        userData = JSON.parse(content);
+      } catch (e) {
+        // If JSON is malformed, start fresh to prevent errors.
+        userData = {};
+      }
+    } else if (getResp.status !== 404) {
+      // Handle errors other than "file not found"
+      const errorText = await getResp.text();
+      console.error('GitHub GET error:', errorText);
       return res.status(500).send('GitHub GET error');
     }
+    // If status is 404, we just continue with the empty userData object.
 
-    // 2) Update balance
-    const uid = String(user_id);
-    const amt = Number(amount);
-    if (!balances[uid]) balances[uid] = 0;
-    balances[uid] += amt;
+    const userRecord = userData[user_id];
+    const newAmount = Number(amount || 0);
 
-    // 3) Save back to GitHub
-    const newContent = Buffer.from(JSON.stringify(balances, null, 2)).toString('base64');
+    // --- 2) Check for duplicate transaction_id for THIS user ---
+    if (userRecord && userRecord.transactions && userRecord.transactions.includes(transaction_id)) {
+      // This specific transaction has already been processed for this user.
+      return res.status(200).send('OK - already recorded');
+    }
+
+    // --- 3) Update or create the user record ---
+    if (userRecord) {
+      // Change: User exists, so add to their balance and record the new transaction.
+      userRecord.balance += newAmount;
+      userRecord.transactions.push(transaction_id);
+      userRecord.last_updated = new Date().toISOString();
+    } else {
+      // Change: User is new, create a new record for them.
+      userData[user_id] = {
+        balance: newAmount,
+        transactions: [transaction_id], // Start a new list of transactions
+        last_updated: new Date().toISOString()
+      };
+    }
+
+    // Change: Convert the updated userData object back to a base64 string.
+    const newContent = Buffer.from(JSON.stringify(userData, null, 2)).toString('base64');
+
+    // --- 4) PUT the updated file back to GitHub ---
     const putUrl = `${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
     const putBody = {
-      message: `Update balance for ${uid}`,
+      message: `Update balance for user ${user_id} with tx ${transaction_id}`,
       content: newContent,
       branch: BRANCH
     };
-    if (sha) putBody.sha = sha;
+    if (sha) {
+        putBody.sha = sha; // Must include the SHA of the file you are replacing.
+    }
 
     const putResp = await fetch(putUrl, {
       method: 'PUT',
       headers: {
         Authorization: `token ${GITHUB_TOKEN}`,
-        'User-Agent': 'revtooo-postback',
+        'User-Agent': 'revtooo-postback-balance-manager',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(putBody)
@@ -75,9 +110,10 @@ export default async function handler(req, res) {
       return res.status(500).send('GitHub PUT error');
     }
 
-    return res.status(200).send(`OK - new balance: ${balances[uid]}`);
+    return res.status(200).send('OK');
+
   } catch (err) {
-    console.error(err);
+    console.error('Server error:', err);
     res.status(500).send('Server error');
   }
 }
