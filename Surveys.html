@@ -47,14 +47,14 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            line-height: 1.7; /* Slightly increased line height */
-            -webkit-font-smoothing: antialiased; /* Smoother fonts on Mac */
-            -moz-osx-font-smoothing: grayscale; /* Smoother fonts on Firefox */
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Top Bar Styling */
         .top-bar {
-            background: rgba(17, 24, 39, 0.8); /* Slightly darker transparent */
+            background: rgba(17, 24, 39, 0.8);
             backdrop-filter: blur(var(--card-blur));
             -webkit-backdrop-filter: blur(var(--card-blur));
             padding: 18px 30px;
@@ -63,10 +63,10 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px 25px; /* Row and column gap */
+            gap: 15px 25px;
             border-bottom: 1px solid var(--border-color);
             box-shadow: 0 4px 15px var(--shadow-color);
-            position: sticky; /* Keep top bar visible */
+            position: sticky;
             top: 0;
             z-index: 100;
         }
@@ -86,20 +86,19 @@
 
         .top-bar #coin-balance {
             font-weight: 700;
-            color: var(--text-highlight); /* Bright yellow for coins */
-            font-size: 1.2em; /* Make balance stand out */
+            color: var(--text-highlight);
+            font-size: 1.2em;
         }
 
-        .top-bar .coin-section .fa-coins { /* Style coin icon */
-             color: var(--text-highlight);
-             font-size: 1.3em;
-             vertical-align: middle;
+        .top-bar .coin-section .fa-coins {
+            color: var(--text-highlight);
+            font-size: 1.3em;
+            vertical-align: middle;
         }
 
-        /* Redeem Link (Top Bar) - Styled like a primary button */
         .top-bar .redeem-link {
             background-color: var(--accent-color);
-            color: var(--bg-gradient-end); /* Dark text on light button */
+            color: var(--bg-gradient-end);
             padding: 10px 22px;
             border-radius: var(--border-radius-small);
             text-decoration: none;
@@ -107,7 +106,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 3px 8px rgba(56, 189, 248, 0.3);
-            display: inline-flex; /* Align icon and text */
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
@@ -118,7 +117,7 @@
             box-shadow: 0 5px 12px rgba(56, 189, 248, 0.5);
         }
 
-        /* Main Content Container - Enhanced Glassmorphism */
+        /* Main Content Container */
         .container {
             max-width: 680px;
             width: 90%;
@@ -133,27 +132,73 @@
             flex: 1;
         }
 
+        /* Offerwall Container (Initially Hidden) */
+        #offerwall-container {
+            display: none;
+            width: 100%;
+            flex: 1;
+            padding: 20px;
+        }
+        #offerwall-iframe {
+            width: 100%;
+            height: calc(100vh - 150px); /* Adjust height based on top/bottom bars */
+            border-radius: var(--border-radius-main);
+        }
+        .back-button {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: fit-content;
+        }
+
         /* Heading Style */
         h2 {
-            font-size: 2.5rem; /* Larger Heading */
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 35px;
             color: var(--text-primary);
-            /* Subtle gradient text effect */
             background: linear-gradient(90deg, var(--text-primary), #d1d5db);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Button Styling - Modern & Clean */
+        /* Revvtwo Button Card Style */
+        .rev-card {
+            background-color: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent-color);
+            border-radius: var(--border-radius-main);
+            padding: 25px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        .rev-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(56, 189, 248, 0.3);
+            background-color: rgba(56, 189, 248, 0.2);
+        }
+        .rev-card h3 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .rev-card p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+
+        /* Button Styling */
         .btn {
-            display: flex; /* Use flex for icon alignment */
+            display: flex;
             align-items: center;
-            justify-content: center; /* Center text/icon */
-            gap: 12px; /* Space between icon and text */
+            justify-content: center;
+            gap: 12px;
             background-color: var(--accent-color);
-            color: var(--bg-gradient-end); /* Dark text on light button */
+            color: var(--bg-gradient-end);
             font-size: 1.1rem;
             font-weight: 600;
             padding: 16px 25px;
@@ -163,14 +208,14 @@
             border: none;
             border-radius: var(--border-radius-small);
             cursor: pointer;
-            transition: all 0.3s ease-in-out; /* Smooth transition */
+            transition: all 0.3s ease-in-out;
             box-shadow: 0 4px 10px rgba(56, 189, 248, 0.25);
-            text-transform: none; /* Normal case */
+            text-transform: none;
             letter-spacing: 0.3px;
         }
 
-        .btn i { /* Icon style within button */
-            font-size: 1.2em; /* Make icon slightly larger */
+        .btn i {
+            font-size: 1.2em;
         }
 
         .btn:hover {
@@ -179,73 +224,40 @@
             box-shadow: 0 7px 15px rgba(56, 189, 248, 0.4);
         }
 
-         .btn:active {
-             transform: translateY(-1px) scale(1);
-             box-shadow: 0 3px 8px rgba(56, 189, 248, 0.3);
+        .btn:active {
+            transform: translateY(-1px) scale(1);
+            box-shadow: 0 3px 8px rgba(56, 189, 248, 0.3);
         }
 
         /* Bottom Bar Styling */
         .bottom-bar {
-            background: var(--bg-gradient-end); /* Match dark end of gradient */
+            background: var(--bg-gradient-end);
             color: var(--text-secondary);
             padding: 20px;
             font-size: 0.9rem;
             text-align: center;
-            margin-top: auto; /* Pushes footer to bottom */
+            margin-top: auto;
             border-top: 1px solid var(--border-color);
             box-shadow: 0 -4px 15px var(--shadow-color);
         }
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
-             .top-bar {
-                padding: 15px 20px;
-                justify-content: center; /* Center items when they wrap */
-            }
-             .container {
-                padding: 30px 25px;
-                margin: 40px auto;
-                width: 92%;
-             }
-             h2 {
-                font-size: 2rem;
-             }
-             .btn {
-                 font-size: 1rem;
-                 padding: 14px 20px;
-                 max-width: 350px;
-             }
+            .top-bar { padding: 15px 20px; justify-content: center; }
+            .container { padding: 30px 25px; margin: 40px auto; width: 92%; }
+            h2 { font-size: 2rem; }
+            .btn { font-size: 1rem; padding: 14px 20px; max-width: 350px; }
+            .rev-card h3 { font-size: 1.5rem; }
+            .rev-card p { font-size: 0.9rem; }
         }
-
-         @media (max-width: 480px) {
-             .top-bar {
-                 flex-direction: column;
-                 align-items: center;
-                 gap: 12px;
-                 padding: 15px;
-             }
-              .top-bar .redeem-link {
-                 width: 80%;
-                 justify-content: center; /* Center icon/text in button */
-             }
-             h2 {
-                 font-size: 1.8rem;
-             }
-             .btn {
-                 font-size: 0.95rem;
-                 padding: 12px 18px;
-                 max-width: 90%;
-                 gap: 8px;
-             }
-             .bottom-bar {
-                 font-size: 0.8rem;
-                 padding: 15px;
-             }
-             .container {
-                 padding: 25px 15px;
-             }
-         }
-
+        @media (max-width: 480px) {
+            .top-bar { flex-direction: column; align-items: center; gap: 12px; padding: 15px; }
+            .top-bar .redeem-link { width: 80%; justify-content: center; }
+            h2 { font-size: 1.8rem; }
+            .btn { font-size: 0.95rem; padding: 12px 18px; max-width: 90%; gap: 8px; }
+            .bottom-bar { font-size: 0.8rem; padding: 15px; }
+            .container { padding: 25px 15px; }
+        }
     </style>
 </head>
 <body>
@@ -253,24 +265,31 @@
     <div class="top-bar">
         <span id="welcome-message">Loading...</span>
         <div class="coin-section">
-             <i class="fa-solid fa-coins"></i> <span>Balance: <span id="coin-balance" class="highlight">0</span></span>
+            <i class="fa-solid fa-coins"></i> <span>Balance: <span id="coin-balance" class="highlight">0</span></span>
         </div>
         <a href="redeem-robux.html" class="redeem-link">
             <i class="fa-solid fa-gift"></i> <span>Redeem Rewards</span>
         </a>
     </div>
 
-    <div class="container">
+    <div class="container" id="main-container">
         <h2>Engage & Earn Rewards</h2>
-        <button class="btn" onclick="window.location.href='Earn.html'">
-            <i class="fa-solid fa-gamepad"></i> Play Games & Earn
-        </button>
-        <button class="btn" onclick="window.location.href='tasks.html'">
-            <i class="fa-solid fa-list-check"></i> Complete Tasks
-        </button>
+        
+        <div class="rev-card" onclick="showOfferwall()">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Revvtwo Offers</h3>
+            <p>Earn coins easily by completing surveys, playing games, and finishing simple tasks on our offerwall.</p>
+        </div>
+        
         <button class="btn" onclick="window.location.href='promocode.html'">
             <i class="fa-solid fa-ticket"></i> Redeem Promo Code
         </button>
+    </div>
+
+    <div id="offerwall-container">
+        <button class="btn back-button" onclick="showMainContent()">
+            <i class="fa-solid fa-arrow-left"></i> Back to Menu
+        </button>
+        <iframe id="offerwall-iframe" style="width:100%;" scrolling="yes" frameborder="0" allow="clipboard-write"></iframe>
     </div>
 
     <div class="bottom-bar">
@@ -278,24 +297,97 @@
     </div>
 
     <script>
+        const REWARDS_URL = "https://rbxworks.github.io/data/rewards.json";
+        const COIN_MULTIPLIER = 50;
+
+        // --- NEW FEATURE: User ID Management ---
+        function getUserId() {
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                // Generate a new random ID for first-time visitors
+                userId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+                localStorage.setItem("userId", userId);
+            }
+            return userId;
+        }
+        
+        // --- NEW FEATURE: Revvtwo Offerwall ---
+        function showOfferwall() {
+            const userId = getUserId();
+            const iframe = document.getElementById('offerwall-iframe');
+            iframe.src = `https://revtoo.com/offerwall/wa8fbd7t2bwop5n0slweqphylgkf8v/${userId}`;
+            
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('offerwall-container').style.display = 'block';
+        }
+
+        function showMainContent() {
+            document.getElementById('main-container').style.display = 'block';
+            document.getElementById('offerwall-container').style.display = 'none';
+        }
+
+        // --- Balance Functions ---
         function getRedeemCoins() {
             return parseFloat(localStorage.getItem("redeemCoins")) || 0;
         }
 
-        function updateUI() {
-            let username = localStorage.getItem("username");
-            if (!username) {
-                window.location.href = "login.html";
-                return;
+        function setRedeemCoins(amount) {
+            localStorage.setItem("redeemCoins", amount);
+        }
+
+        // --- NEW FEATURE: Automatic Balance Sync ---
+        async function syncBalance() {
+            const userId = getUserId();
+            const lastSyncedTimestamp = localStorage.getItem('lastSyncedTimestamp') || new Date(0).toISOString();
+
+            try {
+                const response = await fetch(REWARDS_URL);
+                if (!response.ok) {
+                    console.error("Failed to fetch rewards data.");
+                    return;
+                }
+                const rewardsData = await response.json();
+
+                // Check if the user's ID exists in the rewards data
+                if (rewardsData[userId]) {
+                    const rewardInfo = rewardsData[userId];
+                    const rewardTimestamp = rewardInfo.last_updated;
+
+                    // Only add reward if it's newer than the last one we synced
+                    if (new Date(rewardTimestamp) > new Date(lastSyncedTimestamp)) {
+                        const balanceToAdd = rewardInfo.balance * COIN_MULTIPLIER;
+                        const currentCoins = getRedeemCoins();
+                        const newTotal = currentCoins + balanceToAdd;
+                        
+                        setRedeemCoins(newTotal);
+                        localStorage.setItem('lastSyncedTimestamp', rewardTimestamp); // Save new timestamp
+
+                        console.log(`Synced ${balanceToAdd} coins. New total: ${newTotal}`);
+                        alert(`Congratulations! ${balanceToAdd} coins have been added to your balance!`);
+                    }
+                }
+            } catch (error) {
+                console.error("Error syncing balance:", error);
+            } finally {
+                // Update the UI regardless of sync success
+                updateUI();
             }
-            // Update welcome message and coin balance
-            document.getElementById("welcome-message").innerText = `Welcome, ${username}!`;
+        }
+        
+        // --- UI Update Function ---
+        function updateUI() {
+            const userId = getUserId();
+            // Update welcome message to show User ID
+            document.getElementById("welcome-message").innerText = `Welcome, User #${userId.substring(0, 8)}...`;
             // Format balance with commas for thousands separators
             document.getElementById("coin-balance").innerText = getRedeemCoins().toLocaleString();
         }
 
-        // Run script after DOM is loaded
-        document.addEventListener("DOMContentLoaded", updateUI);
+        // --- Run script after DOM is loaded ---
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check for rewards first, then update the UI with the latest balance
+            syncBalance();
+        });
     </script>
 
 </body>
