@@ -1,4 +1,8 @@
 {
+  "1": {
+    "balance": 1,
+    "last_updated": "2025-09-19T07:07:11.588Z"
+  },
   "{user_id}": {
     "balance": 2.3000000000000003,
     "transactions": [
