@@ -4,15 +4,8 @@
 const GITHUB_API = 'https://api.github.com';
 
 export default async function handler(req, res) {
-  // Accept GET or POST from Revtooo (many networks use GET)
   const params = req.method === 'GET' ? req.query : req.body;
-  const {
-    secret,           // required to validate the request
-    user_id,
-    amount,
-    transaction_id,
-    status
-  } = params;
+  const { secret, user_id, amount, status } = params;
 
   const {
     GITHUB_TOKEN,
@@ -24,25 +17,25 @@ export default async function handler(req, res) {
   } = process.env;
 
   if (secret !== POSTBACK_SECRET) return res.status(403).send('Forbidden');
-  if (!user_id || !transaction_id || status !== '1') return res.status(400).send('Bad Request');
+  if (!user_id || !amount || status !== '1') return res.status(400).send('Bad Request');
 
   try {
-    // 1) GET the file from GitHub
+    // 1) Fetch current file from GitHub
     const getUrl = `${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?ref=${BRANCH}`;
     let getResp = await fetch(getUrl, {
       headers: { Authorization: `token ${GITHUB_TOKEN}`, 'User-Agent': 'revtooo-postback' }
     });
 
     let sha = null;
-    let current = [];
+    let balances = {};
 
     if (getResp.status === 200) {
       const payload = await getResp.json();
       sha = payload.sha;
-      const content = payload.content ? Buffer.from(payload.content, 'base64').toString() : '[]';
-      try { current = JSON.parse(content); } catch (e) { current = []; }
+      const content = payload.content ? Buffer.from(payload.content, 'base64').toString() : '{}';
+      try { balances = JSON.parse(content); } catch (e) { balances = {}; }
     } else if (getResp.status === 404) {
-      current = [];
+      balances = {};
       sha = null;
     } else {
       const t = await getResp.text();
@@ -50,26 +43,17 @@ export default async function handler(req, res) {
       return res.status(500).send('GitHub GET error');
     }
 
-    // 2) avoid dup tx
-    if (current.some(r => r.transaction_id == transaction_id)) {
-      return res.status(200).send('OK - already recorded');
-    }
+    // 2) Update balance
+    const uid = String(user_id);
+    const amt = Number(amount);
+    if (!balances[uid]) balances[uid] = 0;
+    balances[uid] += amt;
 
-    // 3) append this transaction
-    current.push({
-      user_id: String(user_id),
-      amount: Number(amount || 0),
-      transaction_id: String(transaction_id),
-      status,
-      time: new Date().toISOString()
-    });
-
-    const newContent = Buffer.from(JSON.stringify(current, null, 2)).toString('base64');
-
-    // 4) PUT update file
+    // 3) Save back to GitHub
+    const newContent = Buffer.from(JSON.stringify(balances, null, 2)).toString('base64');
     const putUrl = `${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
     const putBody = {
-      message: `Add reward ${transaction_id}`,
+      message: `Update balance for ${uid}`,
       content: newContent,
       branch: BRANCH
     };
@@ -91,7 +75,7 @@ export default async function handler(req, res) {
       return res.status(500).send('GitHub PUT error');
     }
 
-    return res.status(200).send('OK');
+    return res.status(200).send(`OK - new balance: ${balances[uid]}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
