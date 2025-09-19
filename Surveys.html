@@ -6,7 +6,6 @@
     <title>Complete Tasks & Earn Rewards</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
@@ -74,6 +73,12 @@
         .top-bar #welcome-message {
             font-weight: 500;
             color: var(--text-primary);
+        }
+        
+        #welcome-message .user-id-label {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
         .top-bar .coin-section {
@@ -162,7 +167,7 @@
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Revvtwo Button Card Style */
+        /* Revtoo Button Card Style */
         .rev-card {
             background-color: rgba(56, 189, 248, 0.1);
             border: 1px solid var(--accent-color);
@@ -276,7 +281,7 @@
         <h2>Engage & Earn Rewards</h2>
         
         <div class="rev-card" onclick="showOfferwall()">
-            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Revvtwo Offers</h3>
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> revtoo</h3>
             <p>Earn coins easily by completing surveys, playing games, and finishing simple tasks on our offerwall.</p>
         </div>
         
@@ -300,7 +305,7 @@
         const REWARDS_URL = "https://rbxworks.github.io/data/rewards.json";
         const COIN_MULTIPLIER = 50;
 
-        // --- NEW FEATURE: User ID Management ---
+        // --- User ID Management ---
         function getUserId() {
             let userId = localStorage.getItem("userId");
             if (!userId) {
@@ -311,7 +316,7 @@
             return userId;
         }
         
-        // --- NEW FEATURE: Revvtwo Offerwall ---
+        // --- Revtoo Offerwall ---
         function showOfferwall() {
             const userId = getUserId();
             const iframe = document.getElementById('offerwall-iframe');
@@ -335,7 +340,7 @@
             localStorage.setItem("redeemCoins", amount);
         }
 
-        // --- NEW FEATURE: Automatic Balance Sync ---
+        // --- Automatic Balance Sync ---
         async function syncBalance() {
             const userId = getUserId();
             const lastSyncedTimestamp = localStorage.getItem('lastSyncedTimestamp') || new Date(0).toISOString();
@@ -348,19 +353,17 @@
                 }
                 const rewardsData = await response.json();
 
-                // Check if the user's ID exists in the rewards data
                 if (rewardsData[userId]) {
                     const rewardInfo = rewardsData[userId];
                     const rewardTimestamp = rewardInfo.last_updated;
 
-                    // Only add reward if it's newer than the last one we synced
                     if (new Date(rewardTimestamp) > new Date(lastSyncedTimestamp)) {
                         const balanceToAdd = rewardInfo.balance * COIN_MULTIPLIER;
                         const currentCoins = getRedeemCoins();
                         const newTotal = currentCoins + balanceToAdd;
                         
                         setRedeemCoins(newTotal);
-                        localStorage.setItem('lastSyncedTimestamp', rewardTimestamp); // Save new timestamp
+                        localStorage.setItem('lastSyncedTimestamp', rewardTimestamp);
 
                         console.log(`Synced ${balanceToAdd} coins. New total: ${newTotal}`);
                         alert(`Congratulations! ${balanceToAdd} coins have been added to your balance!`);
@@ -369,23 +372,37 @@
             } catch (error) {
                 console.error("Error syncing balance:", error);
             } finally {
-                // Update the UI regardless of sync success
                 updateUI();
             }
         }
         
-        // --- UI Update Function ---
+        // --- MODIFIED UI Update Function ---
         function updateUI() {
+            const username = localStorage.getItem("username");
             const userId = getUserId();
-            // Update welcome message to show User ID
-            document.getElementById("welcome-message").innerText = `Welcome, User #${userId.substring(0, 8)}...`;
-            // Format balance with commas for thousands separators
+            
+            // Update welcome message to show both Username and User ID
+            const welcomeEl = document.getElementById("welcome-message");
+            welcomeEl.innerHTML = `Welcome, <strong>${username}!</strong> <span class="user-id-label">(ID: ${userId.substring(0, 8)}...)</span>`;
+            
+            // Format balance with commas
             document.getElementById("coin-balance").innerText = getRedeemCoins().toLocaleString();
         }
 
         // --- Run script after DOM is loaded ---
         document.addEventListener("DOMContentLoaded", () => {
-            // Check for rewards first, then update the UI with the latest balance
+            // Re-introduced the username check from your original code
+            const username = localStorage.getItem("username");
+            if (!username) {
+                // If no username is found, redirect to login page
+                window.location.href = "login.html";
+                return; // Stop further execution
+            }
+
+            // Ensure a user ID is allotted
+            getUserId();
+            
+            // Check for rewards first, then update the UI with the latest info
             syncBalance();
         });
     </script>
