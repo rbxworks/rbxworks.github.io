@@ -10,5 +10,9 @@
   "cropshield returning to base for charging": {
     "balance": 4,
     "last_updated": "2025-10-24T09:53:01.163Z"
+  },
+  "ANIMAL DETECTED": {
+    "balance": 50,
+    "last_updated": "2025-10-24T10:04:02.096Z"
   }
 }
