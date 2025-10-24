@@ -2,5 +2,9 @@
   "cropshield returning to base for charging": {
     "balance": 50,
     "last_updated": "2025-10-24T10:10:57.554Z"
+  },
+  "WEED DETECTED. cropshield taking action": {
+    "balance": 50,
+    "last_updated": "2025-10-24T10:16:10.838Z"
   }
 }
