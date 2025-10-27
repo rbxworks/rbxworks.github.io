@@ -12,5 +12,12 @@
     "transaction_id": "TX7890",
     "status": "1",
     "time": "2025-10-27T10:17:27.204Z"
+  },
+  {
+    "user_id": "123456",
+    "amount": 20,
+    "transaction_id": "TX7890",
+    "status": "1",
+    "time": "2025-10-27T10:20:29.281Z"
   }
 ]
