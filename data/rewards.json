@@ -33,5 +33,12 @@
     "transaction_id": "TX7890",
     "status": "1",
     "time": "2025-10-27T10:44:20.691Z"
+  },
+  {
+    "user_id": "weed detected. cropshield taking action.",
+    "amount": 100,
+    "transaction_id": "TX7890",
+    "status": "1",
+    "time": "2025-10-27T10:46:15.654Z"
   }
 ]
