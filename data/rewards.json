@@ -40,5 +40,12 @@
     "transaction_id": "TX7890",
     "status": "1",
     "time": "2025-10-29T07:34:22.040Z"
+  },
+  {
+    "user_id": "animal detected. cropshield taking action.",
+    "amount": 623,
+    "transaction_id": "TX7890",
+    "status": "1",
+    "time": "2025-10-29T07:34:57.826Z"
   }
 ]
