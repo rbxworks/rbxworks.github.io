@@ -33,5 +33,12 @@
     "transaction_id": "TX7890",
     "status": "1",
     "time": "2025-11-28T05:04:26.854Z"
+  },
+  {
+    "user_id": "Animal detected in area 50 please take action",
+    "amount": 50,
+    "transaction_id": "TX7890",
+    "status": "1",
+    "time": "2025-11-28T05:04:39.029Z"
   }
 ]
